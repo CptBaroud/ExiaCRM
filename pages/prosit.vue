@@ -1,29 +1,29 @@
 <template>
   <v-container>
-    <v-label>
-      <h1 class="display-1">
-        Prosit Maker
-      </h1>
-    </v-label>
     <v-row
       align="start"
       justify="start"
     >
       <v-col
         cols="2"
-        style="margin-right: 10px"
+        class="mx-6"
       >
+        <v-label>
+          <h1 class="display-1 mb-4">
+            Prosit Maker
+          </h1>
+        </v-label>
         <v-card
           raised
-          style="border-radius: 15px"
+          style="border-radius: 15px;"
         >
           <v-list
             two-line
             rounded
           >
             <v-list-item
-              v-for="(item, i) in getEquipe(equipe)"
-              :key="i"
+              v-for="(item, idx) in equipe"
+              :key="idx"
             >
               <v-list-item-avatar>
                 <v-img :src="item.avatar" />
@@ -41,10 +41,11 @@
         </v-card>
       </v-col>
       <v-col
-        cols="8"
+        cols="7"
       >
         <v-container>
           <v-form
+            v-if="getRight(this.$auth.user)"
             ref="form"
             v-model="valid"
             lazy-validation
@@ -53,7 +54,8 @@
               v-model="name"
               :rules="required"
               placeholder="Nom du Prosit"
-              outlined
+              filled
+              background-color="rgba(253, 254, 251, 0.2)"
               rounded
             />
 
@@ -67,8 +69,7 @@
                 class="shrink"
               >
                 <v-chip
-                  :key="keyword"
-                  color="primary"
+                  color="smokyBlack"
                   close
                   @click:close="keywords.splice(i, 1)"
                 >
@@ -80,7 +81,8 @@
             <v-text-field
               v-model="keywrd"
               placeholder="Mot clés"
-              outlined
+              filled
+              background-color="rgba(253, 254, 251, 0.2)"
               rounded
               @keydown.enter="addKeyword(keywrd)"
             />
@@ -89,7 +91,8 @@
               v-model="context"
               placeholder="Contexte"
               :rules="required"
-              outlined
+              filled
+              background-color="rgba(253, 254, 251, 0.2)"
               rounded
             />
 
@@ -103,7 +106,8 @@
                 <v-text-field
                   v-model="constraint"
                   placeholder="Contraintes"
-                  outlined
+                  filled
+                  background-color="rgba(253, 254, 251, 0.2)"
                   rounded
                   @keydown.enter="addConstraint(constraint)"
                 />
@@ -160,15 +164,8 @@
               v-model="generalisation"
               :rules="required"
               placeholder="Généralisation"
-              outlined
-              rounded
-            />
-
-            <v-text-field
-              v-model="problematic"
-              :rules="required"
-              placeholder="Problématiques"
-              outlined
+              filled
+              background-color="rgba(253, 254, 251, 0.2)"
               rounded
             />
 
@@ -180,10 +177,75 @@
                 cols="4"
               >
                 <v-text-field
+                  v-model="problematic"
+                  placeholder="Problématique"
+                  filled
+                  rounded
+                  background-color="rgba(253, 254, 251, 0.2)"
+                  @keydown.enter="addProblematic(problematic)"
+                />
+              </v-col>
+              <v-col
+                cols="8"
+              >
+                <v-list
+                  v-if="problematics.length >= 1"
+                  color="rgb(18,18,18)"
+                  rounded
+                >
+                  <v-list-item>
+                    <v-list-item-title>
+                      Editer
+                    </v-list-item-title>
+                    <v-list-item-action>
+                      <v-icon
+                        @click="editProblematics = !editProblematics"
+                      >
+                        mdi-pencil
+                      </v-icon>
+                    </v-list-item-action>
+                  </v-list-item>
+                  <v-divider />
+                  <v-list-item
+                    v-for="(item, i) in problematics"
+                    :key="i"
+                    exact
+                  >
+                    <v-list-item-title>
+                      <v-text-field
+                        v-if="editProblematics"
+                        v-model="problematics[i]"
+                      />
+                      <template v-else>
+                        {{ item.name }}
+                      </template>
+                    </v-list-item-title>
+                    <v-list-item-action>
+                      <v-icon
+                        color="primary"
+                        @click="problematics.splice(i, 1)"
+                      >
+                        mdi-close
+                      </v-icon>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list>
+              </v-col>
+            </v-row>
+
+            <v-row
+              align="start"
+              justify="start"
+            >
+              <v-col
+                cols="4"
+              >
+                <v-text-field
                   v-model="hypothesis"
                   placeholder="Hypothèses"
-                  outlined
+                  filled
                   rounded
+                  background-color="rgba(253, 254, 251, 0.2)"
                   @keydown.enter="addHypothesis(hypothesis)"
                 />
               </v-col>
@@ -245,7 +307,8 @@
                 <v-text-field
                   v-model="pa"
                   placeholder="Plan d'action"
-                  outlined
+                  background-color="rgba(253, 254, 251, 0.2)"
+                  filled
                   rounded
                   @keydown.enter="addPa(pa)"
                 />
@@ -307,6 +370,109 @@
               </v-col>
             </v-row>
           </v-form>
+          <v-card v-else raised style="border-radius: 15px">
+            <v-card-title>
+              Prosit Aller
+            </v-card-title>
+            <v-card-text>
+              <template class="my-4">
+                <h3>Mots clés </h3>
+                <v-row
+                  align="center"
+                  justify="start"
+                >
+                  <v-col
+                    v-for="keyword in keywords"
+                    :key="keyword"
+                    class="shrink"
+                  >
+                    <v-chip
+                      :key="keyword"
+                      color="primary"
+                    >
+                      {{ keyword.name }}
+                    </v-chip>
+                  </v-col>
+                </v-row>
+              </template>
+              <template>
+                <h3>Contexte </h3>
+                {{ context }}
+              </template>
+              <template>
+                <h3>Contraintes </h3>
+                <v-list
+                  v-if="constraints.length >= 1"
+                  rounded
+                >
+                  <v-list-item
+                    v-for="item in constraints"
+                    :key="item"
+                    exact
+                  >
+                    <v-list-item-title>
+                      {{ item.name }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </template>
+              <template>
+                <h3>Généralisation</h3>
+                {{ generalisation }}
+              </template>
+              <template>
+                <h3>Contraintes</h3>
+                <v-list
+                  v-if="constraints.length >= 1"
+                  rounded
+                >
+                  <v-list-item
+                    v-for="item in constraints"
+                    :key="item"
+                    exact
+                  >
+                    <v-list-item-title>
+                      {{ item.name }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </template>
+              <template>
+                <h3>Hypothèses</h3>
+                <v-list
+                  v-if="hypothesises.length >= 1"
+                  rounded
+                >
+                  <v-list-item
+                    v-for="item in hypothesises"
+                    :key="item"
+                    exact
+                  >
+                    <v-list-item-title>
+                      {{ item.name }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </template>
+              <template>
+                <h3>Plan d'action</h3>
+                <v-list
+                  v-if="paArray.length >= 1"
+                  rounded
+                >
+                  <v-list-item
+                    v-for="item in paArray"
+                    :key="item"
+                    exact
+                  >
+                    <v-list-item-title>
+                      {{ item.name }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </template>
+            </v-card-text>
+          </v-card>
         </v-container>
       </v-col>
       <v-col
@@ -349,9 +515,15 @@ import draggable from 'vuedraggable'
 import { saveAs } from 'file-saver'
 import { mapActions, mapGetters } from 'vuex'
 import {
-  Document, Footer, HeadingLevel, HorizontalPositionAlign,
+  Document,
+  Footer,
+  HeadingLevel,
+  HorizontalPositionAlign,
   Packer,
-  Paragraph, TabStopPosition, TabStopType, TextRun
+  Paragraph,
+  TabStopPosition,
+  TabStopType,
+  TextRun
 } from 'docx'
 
 export default {
@@ -362,7 +534,9 @@ export default {
   data () {
     return {
       valid: true,
+      user: this.$auth.user,
       editConstraints: false,
+      editProblematics: false,
       editHypothesis: false,
       editPa: false,
       required: [
@@ -375,6 +549,7 @@ export default {
       constraints: [],
       constraint: '',
       generalisation: '',
+      problematics: [],
       problematic: '',
       hypothesises: [],
       hypothesis: '',
@@ -385,13 +560,14 @@ export default {
   computed: {
     ...mapGetters({
       roles: 'role/role',
-      equipe: 'role/equipe'
+      equipe: 'role/currentEquipe',
+      numProsit: 'role/numProsit'
     })
   },
   methods: {
     ...mapActions({
       fillPa: 'prosit/fillPa',
-      uploadFile: 'file/uploadFile'
+      addCer: 'prosit/addCer'
     }),
 
     /**
@@ -408,6 +584,7 @@ export default {
       this.constraint = ''
       this.generalisation = ''
       this.problematic = ''
+      this.problematics = []
       this.hypothesises = []
       this.hypothesis = ''
       this.paArray = []
@@ -420,8 +597,12 @@ export default {
        * @param item
        */
     addKeyword (item) {
-      this.keywords.push({ name: item })
-      this.keywrd = ''
+      if (item.length !== 0) {
+        this.keywords.push({ name: item, definition: '', num_prosit: this.numProsit })
+        this.keywrd = ''
+      } else {
+        this.$toast.warning('Le champ mot clé est vide')
+      }
     },
 
     /**
@@ -430,8 +611,26 @@ export default {
        * @param item
        */
     addConstraint (item) {
-      this.constraints.push({ name: item })
-      this.constraint = ''
+      if (item.length !== 0) {
+        this.constraints.push({ name: item, num_prosit: this.numProsit })
+        this.constraint = ''
+      } else {
+        this.$toast.warning('Le champ contrainte est vide')
+      }
+    },
+
+    /**
+     * Permet d'ajouter une contrainte
+     * dans le tableau de contraintes
+     * @param item
+     */
+    addProblematic (item) {
+      if (item.length !== 0) {
+        this.problematics.push({ name: item, num_prosit: this.numProsit })
+        this.problematic = ''
+      } else {
+        this.$toast.warning('Le champ problématique est vide')
+      }
     },
 
     /**
@@ -440,8 +639,12 @@ export default {
        * @param item
        */
     addHypothesis (item) {
-      this.hypothesises.push({ name: item })
-      this.hypothesis = ''
+      if (item.length !== 0) {
+        this.hypothesises.push({ name: item, num_prosit: this.numProsit })
+        this.hypothesis = ''
+      } else {
+        this.$toast.warning('Le champ hypothèse est vide')
+      }
     },
 
     /**
@@ -449,8 +652,12 @@ export default {
        * @param item
        */
     addPa (item) {
-      this.paArray.push({ name: item })
-      this.pa = ''
+      if (item.length !== 0) {
+        this.paArray.push({ name: item, num_prosit: this.numProsit })
+        this.pa = ''
+      } else {
+        this.$toast.warning('Le champ pa est vide')
+      }
     },
 
     /** Depecreated
@@ -598,113 +805,125 @@ export default {
       // Create document
       const doc = new Document()
       // On recupere les roles
-      const temp = this.getEquipe(this.equipe)
+      const temp = this.equipe
 
       if (this.keywords.length !== 0) {
         if (this.hypothesises.length !== 0) {
           if (this.constraints.length !== 0) {
             if (this.paArray.length !== 0) {
-              if (this.$refs.form.validate()) {
-                this.valid = true
-                this.fillPa(this.paArray)
-                // On crée la première page
-                doc.addSection({
-                  // Footer de la page
-                  footers: {
-                    default: new Footer({
-                      children: [new Paragraph({
-                        text: 'Animateur : ' + temp[0].user + ' / Secretaire : ' + temp[1].user + ' / Scribe : ' + temp[2].user + ' / Gestionaire : ' + temp[3].user
-                      })]
-                    })
-                  },
-                  // Contenu de la page
-                  children: [
-                    new Paragraph({
-                      text: this.name,
-                      heading: HeadingLevel.TITLE,
-                      alignment: HorizontalPositionAlign.CENTER
-                    }),
-                    this.createSpace(),
-                    this.createSpace(),
-                    this.createHeading('Mots Clés'),
-                    this.createSpace(),
-                    ...this.keywords
-                      .map((education) => {
-                        const arr = []
-                        arr.push(
-                          this.createListItem(education.name)
-                        )
-                        return arr
+              if (this.problematics.length !== 0) {
+                if (this.$refs.form.validate()) {
+                  this.valid = true
+                  this.fillPa(this.paArray)
+                  // On crée la première page
+                  doc.addSection({
+                    // Footer de la page
+                    footers: {
+                      default: new Footer({
+                        children: [new Paragraph({
+                          text: 'Animateur : ' + temp[0].user + ' / Secretaire : ' + temp[1].user + ' / Scribe : ' + temp[2].user + ' / Gestionaire : ' + temp[3].user
+                        })]
                       })
-                      .reduce((prev, curr) => prev.concat(curr), []),
-                    this.createSpace(),
-                    this.createSpace(),
-                    this.createHeading('Contexte'),
-                    this.createSpace(),
-                    this.createText(this.context),
-                    this.createSpace(),
-                    this.createHeading('Contraintes'),
-                    this.createSpace(),
-                    ...this.constraints
-                      .map((item) => {
-                        const arr = []
-                        arr.push(
-                          this.createListItem(item.name)
-                        )
-                        return arr
-                      })
-                      .reduce((prev, curr) => prev.concat(curr), []),
-                    this.createSpace(),
-                    this.createSpace(),
-                    this.createHeading('Généralisation'),
-                    this.createSpace(),
-                    this.createText(this.generalisation),
-                    this.createSpace(),
-                    this.createSpace(),
-                    this.createHeading('Problématique'),
-                    this.createSpace(),
-                    this.createText(this.problematic),
-                    this.createSpace(),
-                    this.createSpace(),
-                    this.createHeading('Hypothèses'),
-                    this.createSpace(),
-                    ...this.hypothesises
-                      .map((item) => {
-                        const arr = []
-                        arr.push(
-                          this.createListItem(item.name)
-                        )
-                        return arr
-                      })
-                      .reduce((prev, curr) => prev.concat(curr), []),
-                    this.createSpace(),
-                    this.createSpace(),
-                    this.createHeading('Plan d\'action'),
-                    this.createSpace(),
-                    ...this.paArray
-                      .map((item) => {
-                        const arr = []
-                        arr.push(
-                          this.createListItem(item.name)
-                        )
-                        return arr
-                      })
-                      .reduce((prev, curr) => prev.concat(curr), [])
-                  ]
-                })
+                    },
+                    // Contenu de la page
+                    children: [
+                      new Paragraph({
+                        text: this.name,
+                        heading: HeadingLevel.TITLE,
+                        alignment: HorizontalPositionAlign.CENTER
+                      }),
+                      this.createSpace(),
+                      this.createSpace(),
+                      this.createHeading('Mots Clés'),
+                      this.createSpace(),
+                      ...this.keywords
+                        .map((education) => {
+                          const arr = []
+                          arr.push(
+                            this.createListItem(education.name)
+                          )
+                          return arr
+                        })
+                        .reduce((prev, curr) => prev.concat(curr), []),
+                      this.createSpace(),
+                      this.createSpace(),
+                      this.createHeading('Contexte'),
+                      this.createSpace(),
+                      this.createText(this.context),
+                      this.createSpace(),
+                      this.createHeading('Contraintes'),
+                      this.createSpace(),
+                      ...this.constraints
+                        .map((item) => {
+                          const arr = []
+                          arr.push(
+                            this.createListItem(item.name)
+                          )
+                          return arr
+                        })
+                        .reduce((prev, curr) => prev.concat(curr), []),
+                      this.createSpace(),
+                      this.createSpace(),
+                      this.createHeading('Généralisation'),
+                      this.createSpace(),
+                      this.createText(this.generalisation),
+                      this.createSpace(),
+                      this.createSpace(),
+                      this.createHeading('Problématique'),
+                      this.createSpace(),
+                      ...this.problematics
+                        .map((item) => {
+                          const arr = []
+                          arr.push(
+                            this.createListItem(item.name)
+                          )
+                          return arr
+                        })
+                        .reduce((prev, curr) => prev.concat(curr), []),
+                      this.createSpace(),
+                      this.createSpace(),
+                      this.createHeading('Hypothèses'),
+                      this.createSpace(),
+                      ...this.hypothesises
+                        .map((item) => {
+                          const arr = []
+                          arr.push(
+                            this.createListItem(item.name)
+                          )
+                          return arr
+                        })
+                        .reduce((prev, curr) => prev.concat(curr), []),
+                      this.createSpace(),
+                      this.createSpace(),
+                      this.createHeading('Plan d\'action'),
+                      this.createSpace(),
+                      ...this.paArray
+                        .map((item) => {
+                          const arr = []
+                          arr.push(
+                            this.createListItem(item.name)
+                          )
+                          return arr
+                        })
+                        .reduce((prev, curr) => prev.concat(curr), [])
+                    ]
+                  })
 
-                // On utlise File-Saver pour enregistrer le document
-                Packer.toBlob(doc).then((buffer) => {
-                  saveAs(buffer, 'test.docx')
-                  this.$toast.success('Le fichier à été crée avec succès')
-                  this.saveLocalFile(buffer)
-                }).catch((e) => {
-                  this.$toast.error('Une erreure est survenue')
-                  // eslint-disable-next-line no-console
-                  console.error(e)
-                })
+                  // On utlise File-Saver pour enregistrer le document
+                  Packer.toBlob(doc).then((buffer) => {
+                    saveAs(buffer, this.name + '.docx')
+                    this.$toast.success('Le fichier à été crée avec succès')
+                    this.addCer(this.createObject()).then(this.clearAll)
+                  }).catch((e) => {
+                    this.$toast.error('Une erreure est survenue')
+                    // eslint-disable-next-line no-console
+                    console.error(e)
+                  })
+                } else {
+                  this.$toast.error('Il te manque des champs à renseigner')
+                }
               } else {
-                this.$toast.error('Il te manque des champs à renseigner')
+                this.$toast.error('Il n\' y a aucune problématique')
               }
             } else {
               this.$toast.error('Il n\' y a aucune étape dans le plan d\'action')
@@ -785,51 +1004,87 @@ export default {
     },
 
     /**
-     * Permet de recupêrer l'equipe actuelle en charge du prosit
-     * @param num
-     * @returns {[]}
-     */
-    getEquipe (num) {
+     * Permet de créer l'objet a envoyer
+     **/
+    createObject () {
       const out = []
 
-      this.roles.forEach(function (item) {
-        if (item.equipe === num) {
-          out.push({
-            role: 'Animateur',
-            user: item.Animateur,
-            avatar: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png'
+      // On push le nom
+      out.push({ numProsit: this.numProsit })
+      out.push({ name: this.name })
+      out.push({ generalisation: this.generalisation })
+      out.push({ context: this.context })
+
+      // On push les items de Keywords
+      if (this.keywords.length !== 0) {
+        const temp = []
+        this.keywords.forEach(function (item) {
+          temp.push(item)
+        })
+        out.push({ keyword: temp })
+
+        // On push les items de constraints
+        if (this.constraints.length !== 0) {
+          const temp = []
+          this.constraints.forEach(function (item) {
+            temp.push(item)
           })
-          out.push({
-            role: 'Secretaire',
-            user: item.Secretaire,
-            avatar: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png'
-          })
-          out.push({
-            role: 'Scribe',
-            user: item.Scribe,
-            avatar: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png'
-          })
-          out.push({
-            role: 'Gestionaire',
-            user: item.Gestionaire,
-            avatar: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png'
-          })
+          out.push({ constraints: temp })
+
+          // On push les items de hypothesises
+          if (this.hypothesises.length !== 0) {
+            const temp = []
+            this.hypothesises.forEach(function (item) {
+              temp.push(item)
+            })
+            out.push({ hypothesises: temp })
+
+            // On push les items de problematics
+            if (this.problematics.length !== 0) {
+              const temp = []
+              this.problematics.forEach(function (item) {
+                temp.push(item)
+              })
+              out.push({ problematics: temp })
+
+              // On push les items de problematics
+              if (this.paArray.length !== 0) {
+                const temp = []
+                this.paArray.forEach(function (item) {
+                  temp.push(item)
+                })
+                out.push({ pa: temp })
+              }
+            }
+          }
         }
-      })
-      return out
+      }
+
+      return {
+        numProsit: out[0].numProsit,
+        name: out[1].name,
+        generalisation: out[2].generalisation,
+        context: out[3].context,
+        keywords: out[4].keyword,
+        constraints: out[5].constraints,
+        hypothesises: out[6].hypothesises,
+        problematics: out[7].problematics,
+        pa: out[8].pa
+      }
     },
 
-    saveLocalFile (file) {
-      const formData = new FormData()
-      formData.append(this.name, file)
-      this.uploadFile(formData)
-        .then(this.$toast.success('Le fichier à été enregistrer sur le serveur avec succès'))
-        // eslint-disable-next-line no-sequences
-        .catch((e) => {
-          this.$toast.error('Une erreure est survenue')
-          // eslint-disable-next-line no-console
-          console.error(e)
-        })
+    /**
+     * Permet de checker si l'utilisateur est le scretaire ou pas
+     * @param user
+     * @returns {boolean}
+     */
+    getRight (user) {
+      if (this.$auth.user !== null) {
+        if (this.equipe[2].user === user[0].name || user[0].isAdmin) {
+          return true
+        }
+        return false
+      }
     }
   }
 }

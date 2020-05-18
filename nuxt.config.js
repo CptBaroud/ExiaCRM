@@ -76,12 +76,12 @@ export default {
     strategies: {
       local: {
         endpoints: {
-          login: { url: '/login/', method: 'POST', propertyName: 'data.token' },
-          logout: false,
-          user: { url: '/users/getuser', method: 'get' }
+          login: { url: '/login/', method: 'post', propertyName: 'token' },
+          logout: { url: 'login', method: 'delete' },
+          user: { url: '/users/getuser', method: 'get', propertyName: 'user' }
         },
-        tokenRequired: true,
-        tokenType: 'Bearer'
+        // tokenRequired: true,
+        tokenType: ''
       }
     },
     redirect: {
@@ -125,6 +125,9 @@ export default {
     ** You can extend webpack config here
     */
     extend (config, ctx) {
+      config.node = {
+        fs: 'empty'
+      }
     }
   }
 }

@@ -5,5 +5,8 @@ export default {
       out.push(item.name)
     })
     return out
+  },
+  cer (state) {
+    return state.cer
   }
 }

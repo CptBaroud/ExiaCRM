@@ -1,10 +1,10 @@
 export default () => ({
-  pa: [
-    {
-      name: 'Test 1'
-    },
-    {
-      name: 'Test 2'
-    }
-  ]
+  keywords: [],
+  context: '',
+  constraints: [],
+  generalisation: '',
+  problematics: [],
+  hypothesises: [],
+  pa: [],
+  cer: []
 })

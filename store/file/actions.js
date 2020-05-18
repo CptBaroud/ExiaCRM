@@ -1,23 +1,17 @@
 import axios from 'axios'
-// import multer from 'multer'
 
 export default {
-  uploadFile: (context, pa) => {
-    /* const upload = multer({
-      dest: './pa'
-    }) */
-
+  uploadFile: (context, object) => {
+    console.dir(object)
     return new Promise((resolve, reject) => {
-      axios.post('/pa', pa, {
-        headers: {
-          ContentType: 'multipart/form-data'
-        }
-      }).then((response) => {
-        context.commit('addFile', response.data)
-        resolve(response.data)
-      }).catch((onerror) => {
-        reject(onerror)
-      })
+      axios.post(process.env.API_URL + '/upload', object)
+        .then((response) => {
+          context.commit('addFile', response.data)
+        }).catch((e) => {
+        // eslint-disable-next-line no-console
+          console.error(e)
+          reject(onerror)
+        })
     })
   }
 }

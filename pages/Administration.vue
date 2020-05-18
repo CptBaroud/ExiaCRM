@@ -7,9 +7,12 @@
     </v-label>
     <v-row>
       <v-col
-        cols="3"
+        cols="4"
       >
-        <v-card>
+        <v-card
+          raised
+          style="border-radius: 15px"
+        >
           <v-card-title>
             Gestion des prosits
           </v-card-title>
@@ -58,7 +61,7 @@
         </v-card>
       </v-col>
       <v-col
-        cols="6"
+        cols="8"
       >
         <v-data-iterator
           :items="roles"

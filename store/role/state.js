@@ -78,6 +78,7 @@ export default () => ({
       Gestionaire: 'Julien'
     }
   ],
+  currentEquipe: [],
   numProsit: 13,
   equipe: 3
 })

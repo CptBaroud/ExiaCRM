@@ -37,7 +37,7 @@ export default () => ({
     },
     {
       username: 'Tipi',
-      name: 'Paulien',
+      name: 'Pauline',
       avatar: ''
     },
     {
