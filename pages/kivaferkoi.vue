@@ -149,7 +149,7 @@
                     <v-list-item-subtitle>
                       {{ item.name }}
                     </v-list-item-subtitle>
-                    <v-list-item-content>
+                    <!-- <v-list-item-content>
                       <v-combobox
                         v-model="item.pa"
                         :disabled="checkRight(item.name)"
@@ -157,7 +157,7 @@
                         filled
                         rounded
                       />
-                    </v-list-item-content>
+                    </v-list-item-content> -->
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -194,13 +194,16 @@ export default {
     }),
 
     tirage () {
-      console.dir(this.$auth)
-      if (this.$auth.user[0].isAdmin) {
-        if (this.toPick <= this.getAllSize()) {
-          this.getRandom(this.toPick)
+      if (this.$auth.user != null) {
+        if (this.$auth.user[0].isAdmin) {
+          if (this.toPick <= this.getAllSize()) {
+            this.getRandom(this.toPick)
+          } else {
+            this.$toast.error('Le nonbre est trop grand')
+            this.toPick = null
+          }
         } else {
-          this.$toast.error('Le nonbre est trop grand')
-          this.toPick = null
+          this.$toast.warning('T\'a pas le droit de faire ça ^^')
         }
       } else {
         this.$toast.warning('T\'a pas le droit de faire ça ^^')

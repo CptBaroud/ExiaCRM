@@ -5,7 +5,7 @@
         Panel d'Administration
       </h1>
     </v-label>
-    <v-row>
+    <v-row v-if="getRight()">
       <v-col
         cols="4"
       >
@@ -168,6 +168,26 @@
         </v-data-iterator>
       </v-col>
     </v-row>
+    <v-layout
+      v-else
+      justify-center
+      align-center
+    >
+      <v-flex
+        xs12
+        sm8
+        md6
+      >
+        <v-card style="border-radius: 15px" class="my-8">
+          <v-card-title>
+            Erreur
+          </v-card-title>
+          <v-card-text>
+            T'a pas le droit de voir ça
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -181,7 +201,89 @@ export default {
       num: this.numProsit,
       itemsPerPageArray: [4, 8, 11],
       itemsPerPage: 4,
-      page: 1
+      page: 1,
+      list1: [
+        {
+          username: 'Peliagos',
+          name: 'Remi',
+          avatar: ''
+        },
+        {
+          username: 'Archimed',
+          name: 'Julien',
+          avatar: ''
+        },
+        {
+          username: 'Franso',
+          name: 'François',
+          avatar: ''
+        },
+        {
+          username: 'Loulou',
+          name: 'Louis',
+          avatar: ''
+        },
+        {
+          username: 'Gwn',
+          name: 'Gwenael',
+          avatar: ''
+        },
+        {
+          username: 'CptBaroud',
+          name: 'Gurvan',
+          avatar: ''
+        },
+        {
+          username: 'Tipi',
+          name: 'Pauline',
+          avatar: ''
+        },
+        {
+          username: 'Socla',
+          name: 'Armand',
+          avatar: ''
+        }
+      ],
+      list2: [
+        {
+          username: 'Mmouky',
+          name: 'Kevin',
+          avatar: ''
+        },
+        {
+          username: 'Kevkev',
+          name: 'Kevin',
+          avatar: ''
+        },
+        {
+          username: 'Ulchero',
+          name: 'Benjamin',
+          avatar: ''
+        }
+      ],
+      list3: [
+        {
+          username: 'Loulou',
+          name: 'Louis',
+          avatar: ''
+        },
+        {
+          username: 'Gwn',
+          name: 'Gwenael',
+          avatar: ''
+        },
+        {
+          username: 'CptBaroud',
+          name: 'Gurvan',
+          avatar: ''
+        },
+        {
+          username: 'Tipi',
+          name: 'Pauline',
+          avatar: ''
+        }
+      ],
+      controlOnStart: true
     }
   },
   computed: {
@@ -193,6 +295,16 @@ export default {
 
     numberOfPages () {
       return Math.ceil(this.roles.length / this.itemsPerPage)
+    },
+
+    alreadyPicked: {
+      get () {
+        return this.$store.state.kivaferkoi.alreadyPicked
+      },
+
+      set (value) {
+        this.$store.commit('updateAlreadyPicked', value)
+      }
     }
   },
   methods: {
@@ -299,6 +411,35 @@ export default {
      */
     updateItemsPerPage (number) {
       this.itemsPerPage = number
+    },
+
+    /**
+     * Permet de checker si l'utilisateur est le scretaire ou pas
+     * @param user
+     * @returns {boolean}
+     *  -> True si l'user est authorisé
+     *  -> False si l'user ne l'est pas
+     */
+    getRight () {
+      if (this.$auth.user !== null) {
+        if (this.$auth.user[0].isAdmin) {
+          return true
+        }
+        return false
+      }
+      return false
+    },
+
+    clone ({ name, avatar, username }) {
+      return { name, avatar, username }
+    },
+
+    pullFunction () {
+      return this.controlOnStart ? 'clone' : true
+    },
+
+    start ({ originalEvent }) {
+      this.controlOnStart = originalEvent.ctrlKey
     }
   }
 }

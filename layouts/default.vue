@@ -1,5 +1,7 @@
 <template>
-  <v-app dark>
+  <v-app
+    dark
+  >
     <v-app-bar
       :clipped-left="clipped"
       height="115"
@@ -57,107 +59,133 @@
             Connexion
           </v-btn>
         </template>
-        <v-card style="border-radius: 15px" raised class="mt-8">
+        <v-card style="border-radius: 15px" raised>
           <v-card-title class="headline">
             <v-btn
-              fab
-              color="red"
+              icon
               top
-              x-small
+              flat
+              small
               right
               absolute
               @click="dialog = false"
             >
-              <v-icon>
+              <v-icon
+                color="red"
+              >
                 mdi-close
               </v-icon>
             </v-btn>
             Login
           </v-card-title>
           <v-card-text class="py-4 px-6">
-            <v-text-field
-              v-model="username"
-              label="Username"
-              filled
-              rounded
-            />
-            <v-text-field
-              v-model="password"
-              label="Mot de passe"
-              type="password"
-              filled
-              rounded
-            />
+            <v-form>
+              <v-text-field
+                v-model="username"
+                label="Username"
+                filled
+                rounded
+              />
+              <v-text-field
+                v-model="password"
+                label="Mot de passe"
+                type="password"
+                filled
+                rounded
+              />
+            </v-form>
           </v-card-text>
           <v-card-actions>
-            <v-spacer />
             <v-dialog v-model="registerDialog" persistent max-width="310">
               <template v-slot:activator="{ on }">
                 <v-btn text dark v-on="on">
                   S'enregistrer
                 </v-btn>
               </template>
-              <v-card style="border-radius: 15px" raised class="mt-8">
+              <v-card style="border-radius: 15px" raised>
                 <v-card-title class="headline">
                   <v-btn
-                    fab
-                    color="red"
+                    icon
                     top
-                    x-small
+                    flat
+                    small
                     right
                     absolute
                     @click="registerDialog = false"
                   >
-                    <v-icon>
+                    <v-icon
+                      color="red"
+                    >
                       mdi-close
                     </v-icon>
                   </v-btn>
                   Register
                 </v-card-title>
                 <v-card-text class="py-4 px-6">
-                  <v-text-field
-                    v-model="registerInfo.name"
-                    label="Nom"
-                    filled
-                    rounded
-                  />
-                  <v-text-field
-                    v-model="registerInfo.username"
-                    label="Username"
-                    filled
-                    rounded
-                  />
-                  <v-text-field
-                    v-model="registerInfo.password"
-                    label="Mot de passe"
-                    type="password"
-                    filled
-                    rounded
-                  />
-                  <v-combobox
-                    v-model="registerInfo.avatar"
-                    :items="avatars"
-                    filled
-                    rounded
+                  <v-form
+                    ref="form"
+                    v-model="valid"
+                    lazy-validation
                   >
-                    <template v-slot:selection="data">
-                      <v-chip
-                        :key="JSON.stringify(data.item.name)"
-                        v-bind="data.attrs"
-                        :input-value="data.selected"
-                        :disabled="data.disabled"
-                        @click:close="data.parent.selectItem(data.item.name)"
-                      >
-                        <v-avatar
-                          class="accent white--text"
-                          left
+                    <v-text-field
+                      v-model="registerInfo.name"
+                      label="Prenom"
+                      filled
+                      rounded
+                      :rules="required"
+                    />
+                    <v-text-field
+                      v-model="registerInfo.username"
+                      label="Username"
+                      filled
+                      rounded
+                      :rules="required"
+                    />
+                    <v-text-field
+                      v-model="registerInfo.password"
+                      label="Mot de passe"
+                      type="password"
+                      filled
+                      rounded
+                      :rules="required"
+                    />
+                    <v-text-field
+                      v-model="registerInfo.questionSecrete"
+                      label="Repondre a la question secrete"
+                      :hint="loadQuestionSecrete()"
+                      autocomplete="off"
+                      filled
+                      rounded
+                    />
+                    <v-select
+                      v-model="registerInfo.avatar"
+                      :items="avatars"
+                      :rules="required"
+                      item-text="name"
+                      item-value="img"
+                      filled
+                      rounded
+                      chips
+                    >
+                      <template v-slot:selection="data">
+                        <v-chip
+                          :key="JSON.stringify(data.item.name)"
+                          v-bind="data.attrs"
+                          :input-value="data.selected"
+                          :disabled="data.disabled"
+                          @click:close="data.parent.selectItem(data.item)"
                         >
-                          <v-img :src="data.item.img" />
-                        </v-avatar>
-                        {{ data.item.name }}
-                      </v-chip>
-                    </template>
-                  </v-combobox>
+                          <v-avatar
+                            class="accent white--text"
+                            left
+                          >
+                            <v-img :src="data.item.img" />
+                          </v-avatar>
+                          {{ data.item.name }}
+                        </v-chip>
+                      </template>
+                    </v-select>
+                  </v-form>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer />
@@ -167,6 +195,7 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
+            <v-spacer />
             <v-btn color="green darken-1" text @click="login()">
               Se Connecter
             </v-btn>
@@ -215,15 +244,12 @@
         <nuxt />
       </v-container>
     </v-content>
-    <v-footer
-      color="smokyBlack"
-    >
-      V 0.1
-    </v-footer>
   </v-app>
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data () {
     return {
@@ -231,11 +257,25 @@ export default {
       miniVariant: false,
       drawer: false,
       dialog: false,
+      valid: true,
+      required: [
+        value => !!value || 'Required.'
+      ],
+      requiredQuestion: [
+        value => !!value
+      ],
       auht: this.$auth,
       registerDialog: false,
       username: '',
       password: '',
       registerInfo: [],
+      questionSecrete: 'Qui nous a malheureusement quitter en A1',
+      questionsSecrete: [
+        'Qui nous a malheureusement quitter en A1 ?',
+        'Qui trouvais la charge de travail trop importante ?',
+        'Qui est partit après s\'etre fait wasted par gurvan ?',
+        'Qui a une soeur avocate ?'
+      ],
       avatars: [
         {
           img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png?w=660',
@@ -314,6 +354,11 @@ export default {
           to: '/prosit'
         },
         {
+          icon: 'mdi-view-list',
+          title: 'Prosit Aller',
+          to: '/prositsAller'
+        },
+        {
           icon: 'mdi-account-group',
           title: 'Kivaferkoi',
           to: '/kivaferkoi'
@@ -348,34 +393,63 @@ export default {
     },
 
     register () {
-      this.dialog = false
-      this.$axios.post(process.env.API_URL + '/login/register', {
-        username: this.registerInfo.username,
-        name: this.registerInfo.name,
-        avatar: this.registerInfo.avatar.img,
-        password: this.registerInfo.password
-      }).then(() => {
-        this.$auth.loginWith('local', {
-          data: {
+      if (this.$refs.form.validate()) {
+        if (this.registerInfo.questionSecrete.toString().toLowerCase() === 'amiel') {
+          console.dir(this.registerInfo)
+          this.dialog = false
+          this.valid = true
+          axios.post(process.env.API_URL + '/login/register', {
             username: this.registerInfo.username,
+            name: this.registerInfo.name,
+            avatar: this.registerInfo.avatar,
             password: this.registerInfo.password
+          }).then(() => {
+            this.$auth.loginWith('local', {
+              data: {
+                username: this.registerInfo.username,
+                password: this.registerInfo.password
+              }
+            })
+              .then(
+                this.$toast.success('Tu as été connecté avec succès')
+              )
+              .catch((err) => {
+                // eslint-disable-next-line no-console
+                console.error(err)
+                this.$toast.error(err)
+              })
+            this.$toast.success('Compte créer avec succès')
           }
-        })
-          .then(
-            this.$toast.success('Tu as été connecté avec succès')
-          )
-          .catch((err) => {
+          ).catch((onerror) => {
             // eslint-disable-next-line no-console
-            console.error(err)
-            this.$toast.error(err)
+            console.error(onerror)
+            this.$toast.error(onerror)
           })
+        } else {
+          this.$toast.warning('Quand meme la question secrete ...')
+        }
       }
-      ).catch((onerror) => {
-        // eslint-disable-next-line no-console
-        console.error(onerror)
-        this.$toast.error(onerror)
-      })
+    },
+
+    loadQuestionSecrete () {
+      const question = Math.floor(Math.random() * this.questionsSecrete.length)
+      return this.questionsSecrete[question]
     }
   }
 }
 </script>
+
+<style>
+  input:-webkit-autofill,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px #303030 inset !important;
+  }
+  input:-webkit-autofill:hover {
+    -webkit-box-shadow: 0 0 0 30px #424242 inset !important;
+  }
+  /*Change text in autofill textbox*/
+  input:-webkit-autofill {
+    -webkit-text-fill-color: white !important;
+  }
+</style>

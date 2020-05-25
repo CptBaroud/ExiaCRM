@@ -6,5 +6,6 @@ export default () => ({
   problematics: [],
   hypothesises: [],
   pa: [],
-  cer: []
+  cer: [],
+  allPa: []
 })

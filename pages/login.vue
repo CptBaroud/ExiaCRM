@@ -9,25 +9,25 @@
       sm8
       md6
     >
-      <v-card raised class="rounded-card">
-        <v-card-title>
-          Login
+      <v-card raised style="border-radius: 15px" class="my-4 mx-4">
+        <v-card-title class="py-8 px-4">
+          Bienvenue sur le CRM des A3 du CESI de Saint-Nazaire
         </v-card-title>
-        <v-text-field
-          v-model="username"
-          outlined
-          rounded
-        />
-        <v-text-field
-          v-model="password"
-          type="password"
-          outlined
-          rounded
-        />
+        <v-card-subtitle>
+          Mais la t'es pas connecté donc tu vas pas pouvoir faire grand chose
+        </v-card-subtitle>
         <v-card-actions>
-          <v-btn @click="login">
-            Login
-          </v-btn>
+          <v-layout
+            column
+            justify-center
+            align-center
+          >
+            <v-flex>
+              <v-btn @click="$nuxt.$children[2].dialog = true">
+                Login
+              </v-btn>
+            </v-flex>
+          </v-layout>
         </v-card-actions>
       </v-card>
     </v-flex>
@@ -39,29 +39,7 @@ export default {
   name: 'Login',
   data () {
     return {
-      username: '',
-      password: ''
-    }
-  },
-  methods: {
-    async login () {
-      try {
-        await this.$auth.loginWith('local', {
-          data: {
-            username: this.username,
-            password: this.password
-          }
-        }).catch((e) => {
-          // eslint-disable-next-line no-console
-          console.error(e)
-          this.$toast.error('Failed Logging In', { icon: 'mdi-error' })
-        })
-        if (this.$auth.loggedIn) {
-          this.$toast.success('Successfully Logged In', { icon: 'done' })
-        }
-      } catch (e) {
-        this.$toast.error('Username or Password wrong', { icon: 'error' })
-      }
+
     }
   }
 }

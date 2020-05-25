@@ -8,5 +8,8 @@ export default {
   },
   cer (state) {
     return state.cer
+  },
+  allPa (state) {
+    return state.allPa
   }
 }

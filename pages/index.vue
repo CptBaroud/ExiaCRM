@@ -8,6 +8,7 @@
     <v-row
       align="start"
       justify="start"
+      style="padding-left: 35px; padding-right: 35px"
     >
       <v-col
         cols="3"
@@ -15,7 +16,7 @@
       >
         <v-card
           raised
-          style="border-radius: 15px"
+          style="border-radius: 20px"
         >
           <v-card-title>
             Equipe actuelle
@@ -55,7 +56,7 @@
       >
         <v-card
           raised
-          style="border-radius: 15px"
+          style="border-radius: 20px"
         >
           <v-card-title>
             Kivaferkoi
@@ -95,7 +96,7 @@
       >
         <v-card
           raised
-          style="border-radius: 15px"
+          style="border-radius: 20px"
         >
           <v-card-title>
             Téléchargé le dernier CER
@@ -122,7 +123,7 @@
               large
               rounded
               nuxt
-              to="/prosits"
+              to="/prositsAller"
             >
               Les autres
             </v-btn>
@@ -165,21 +166,15 @@ export default {
     })
   },
   mounted () {
-    this.getCer(13)
-    this.getUsers()
+    this.getCer()
   },
   methods: {
     ...mapActions({
-      getACer: 'prosit/getCer',
-      getAllUser: 'promo/getAll'
+      getACer: 'prosit/getCer'
     }),
 
-    getCer (numProsit) {
-      this.getACer(numProsit)
-    },
-
-    getUsers () {
-      this.getAllUser()
+    getCer () {
+      this.getACer(this.prosit)
     },
 
     /**
@@ -187,104 +182,107 @@ export default {
      * a l'aide des methodes adjointes
      **/
     createDocx (object) {
-      console.dir(object)
       // Create document
       const doc = new Document()
       // On crée la première page
-      doc.addSection({
-        // Contenu de la page
-        children: [
-          new Paragraph({
-            text: object.name,
-            heading: HeadingLevel.TITLE,
-            alignment: HorizontalPositionAlign.CENTER
-          }),
-          this.createSpace(),
-          this.createSpace(),
-          this.createHeading('Mots Clés'),
-          this.createSpace(),
-          ...object.data.keywords
-            .map((education) => {
-              const arr = []
-              arr.push(
-                this.createListItem(education.name)
-              )
-              return arr
-            })
-            .reduce((prev, curr) => prev.concat(curr), []),
-          this.createSpace(),
-          this.createSpace(),
-          this.createHeading('Contexte'),
-          this.createSpace(),
-          this.createText(object.data.context),
-          this.createSpace(),
-          this.createHeading('Contraintes'),
-          this.createSpace(),
-          ...object.data.constraints
-            .map((item) => {
-              const arr = []
-              arr.push(
-                this.createListItem(item.name)
-              )
-              return arr
-            })
-            .reduce((prev, curr) => prev.concat(curr), []),
-          this.createSpace(),
-          this.createSpace(),
-          this.createHeading('Généralisation'),
-          this.createSpace(),
-          this.createText(object.data.generalisation),
-          this.createSpace(),
-          this.createSpace(),
-          this.createHeading('Problématique'),
-          this.createSpace(),
-          ...object.data.problematics
-            .map((item) => {
-              const arr = []
-              arr.push(
-                this.createListItem(item.name)
-              )
-              return arr
-            })
-            .reduce((prev, curr) => prev.concat(curr), []),
-          this.createSpace(),
-          this.createSpace(),
-          this.createHeading('Hypothèses'),
-          this.createSpace(),
-          ...object.data.hyptothesies
-            .map((item) => {
-              const arr = []
-              arr.push(
-                this.createListItem(item.name)
-              )
-              return arr
-            })
-            .reduce((prev, curr) => prev.concat(curr), []),
-          this.createSpace(),
-          this.createSpace(),
-          this.createHeading('Plan d\'action'),
-          this.createSpace(),
-          ...object.data.pa
-            .map((item) => {
-              const arr = []
-              arr.push(
-                this.createListItem(item.name)
-              )
-              return arr
-            })
-            .reduce((prev, curr) => prev.concat(curr), [])
-        ]
-      })
+      if (object.size > 0) {
+        doc.addSection({
+          // Contenu de la page
+          children: [
+            new Paragraph({
+              text: object.name,
+              heading: HeadingLevel.TITLE,
+              alignment: HorizontalPositionAlign.CENTER
+            }),
+            this.createSpace(),
+            this.createSpace(),
+            this.createHeading('Mots Clés'),
+            this.createSpace(),
+            ...object.data.keywords
+              .map((education) => {
+                const arr = []
+                arr.push(
+                  this.createListItem(education.name)
+                )
+                return arr
+              })
+              .reduce((prev, curr) => prev.concat(curr), []),
+            this.createSpace(),
+            this.createSpace(),
+            this.createHeading('Contexte'),
+            this.createSpace(),
+            this.createText(object.data.context),
+            this.createSpace(),
+            this.createHeading('Contraintes'),
+            this.createSpace(),
+            ...object.data.constraints
+              .map((item) => {
+                const arr = []
+                arr.push(
+                  this.createListItem(item.name)
+                )
+                return arr
+              })
+              .reduce((prev, curr) => prev.concat(curr), []),
+            this.createSpace(),
+            this.createSpace(),
+            this.createHeading('Généralisation'),
+            this.createSpace(),
+            this.createText(object.data.generalisation),
+            this.createSpace(),
+            this.createSpace(),
+            this.createHeading('Problématique'),
+            this.createSpace(),
+            ...object.data.problematics
+              .map((item) => {
+                const arr = []
+                arr.push(
+                  this.createListItem(item.name)
+                )
+                return arr
+              })
+              .reduce((prev, curr) => prev.concat(curr), []),
+            this.createSpace(),
+            this.createSpace(),
+            this.createHeading('Hypothèses'),
+            this.createSpace(),
+            ...object.data.hyptothesies
+              .map((item) => {
+                const arr = []
+                arr.push(
+                  this.createListItem(item.name)
+                )
+                return arr
+              })
+              .reduce((prev, curr) => prev.concat(curr), []),
+            this.createSpace(),
+            this.createSpace(),
+            this.createHeading('Plan d\'action'),
+            this.createSpace(),
+            ...object.data.pa
+              .map((item) => {
+                const arr = []
+                arr.push(
+                  this.createListItem(item.name)
+                )
+                return arr
+              })
+              .reduce((prev, curr) => prev.concat(curr), [])
+          ]
+        })
 
-      // On utlise File-Saver pour enregistrer le document
-      Packer.toBlob(doc).then((buffer) => {
-        saveAs(buffer, object.name + '.docx')
-        this.$toast.success('Le fichier à été crée avec succès')
-      }).catch((e) => {
-        this.$toast.error('Une erreure est survenue')
-        // eslint-disable-next-line no-console
-        console.error(e)
-      })
+        // On utlise File-Saver pour enregistrer le document
+        Packer.toBlob(doc).then((buffer) => {
+          saveAs(buffer, object.name + '.docx')
+          this.$toast.success('Le fichier à été crée avec succès')
+        }).catch((e) => {
+          this.$toast.error('Une erreure est survenue')
+          // eslint-disable-next-line no-console
+          console.error(e)
+        })
+      } else {
+        this.$toast.error('Il n\'y a aucun prosit')
+      }
     },
 
     /*
@@ -356,6 +354,6 @@ export default {
 
 <style>
   .rounded-card{
-    border-radius:15px;
+    border-radius:20px;
   }
 </style>

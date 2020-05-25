@@ -85,11 +85,15 @@ export default {
       }
     },
     redirect: {
-      login: '/?login=1',
-      logout: '/',
+      login: '/',
+      logout: '/login',
       user: '/profile',
       callback: '/'
     }
+  },
+
+  router: {
+    middleware: ['authenticated']
   },
 
   /*

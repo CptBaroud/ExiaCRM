@@ -23,7 +23,6 @@ export default {
     context.commit('fillPa', pa)
   },
   addCer: (context, pa) => {
-    console.dir(pa)
     return new Promise((resolve, reject) => {
       axios.post(process.env.API_URL + '/prosit/', pa)
         .then((response) => {
@@ -41,6 +40,19 @@ export default {
       axios.get(process.env.API_URL + '/prosit/' + numProsit)
         .then((response) => {
           context.commit('addCer', response.data)
+          resolve(response.data)
+        }).catch((onerror) => {
+        // eslint-disable-next-line no-console
+          console.error(onerror)
+          reject(onerror)
+        })
+    })
+  },
+  getAllPa: (context) => {
+    return new Promise((resolve, reject) => {
+      axios.get(process.env.API_URL + '/prosit/get/all')
+        .then((response) => {
+          context.commit('fillAllPa', response.data)
           resolve(response.data)
         }).catch((onerror) => {
         // eslint-disable-next-line no-console

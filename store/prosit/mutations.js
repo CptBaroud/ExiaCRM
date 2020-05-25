@@ -20,6 +20,9 @@ export default {
   fillPa (state, data) {
     state.pa = data
   },
+  fillAllPa (state, data) {
+    state.allPa = data
+  },
   addCer (state, data) {
     state.cer = { name: data.name, data }
   }
