@@ -1114,7 +1114,7 @@ export default {
      *  -> False si l'user ne l'est pas
      */
     getRight () {
-      if (this.$auth.user !== null) {
+      if (this.$auth.user !== null && this.$auth.loggedIn) {
         if (this.equipe[2].user === this.$auth.user[0].name || this.$auth.user[0].isAdmin) {
           return true
         }

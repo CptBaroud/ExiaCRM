@@ -77,7 +77,7 @@ export default {
       local: {
         endpoints: {
           login: { url: '/login/', method: 'post', propertyName: 'token' },
-          logout: { url: 'login', method: 'delete' },
+          logout: { url: '/login/', method: 'delete' },
           user: { url: '/users/getuser', method: 'get', propertyName: 'user' }
         },
         // tokenRequired: true,
@@ -93,7 +93,7 @@ export default {
   },
 
   router: {
-    middleware: ['authenticated']
+    /* middleware: ['authenticated'] */
   },
 
   /*

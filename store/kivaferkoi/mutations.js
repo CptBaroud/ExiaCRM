@@ -3,7 +3,9 @@ export default {
     const temp = []
     // Si le nombre de personne est disponible
     if (size <= state.notYetPicked.length) {
+      // On tire normalement les personnes
       pick(state, size, temp)
+
       // Si le nombre de personne n'est pas disponible
       // mais qu'il reste des gens a tirer dans NotyetPicked
     } else if (state.notYetPicked.length > 0) {
@@ -16,6 +18,7 @@ export default {
 
       // On update le nombre de personne restant a query
       size = size - temp.length
+
       // On re-rempli le tableaux de gens à tirer
       // et on vide celui de ceux déja tiré au sort
       state.notYetPicked = state.alreadyPicked
