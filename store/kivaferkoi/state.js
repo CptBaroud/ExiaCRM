@@ -1,6 +1,38 @@
 export default () => ({
   alreadyPicked: [
     {
+      username: 'Mmouky',
+      name: 'Kevin',
+      avatar: ''
+    },
+    {
+      username: 'Ulchero',
+      name: 'Benjamin',
+      avatar: ''
+    },
+    {
+      username: 'Kevkev',
+      name: 'Kevin',
+      avatar: ''
+    },
+    {
+      username: 'Tipi',
+      name: 'Pauline',
+      avatar: ''
+    },
+    {
+      username: 'Loulou',
+      name: 'Louis',
+      avatar: ''
+    },
+    {
+      username: 'Socla',
+      name: 'Armand',
+      avatar: ''
+    }
+  ],
+  notYetPicked: [
+    {
       username: 'Peliagos',
       name: 'Remi',
       avatar: ''
@@ -16,11 +48,6 @@ export default () => ({
       avatar: ''
     },
     {
-      username: 'Loulou',
-      name: 'Louis',
-      avatar: ''
-    },
-    {
       username: 'Gwn',
       name: 'Gwenael',
       avatar: ''
@@ -28,40 +55,13 @@ export default () => ({
     {
       username: 'CptBaroud',
       name: 'Gurvan',
-      avatar: ''
-    },
-    {
-      username: 'Tipi',
-      name: 'Pauline',
-      avatar: ''
-    },
-    {
-      username: 'Kevkev',
-      name: 'Kevin',
-      avatar: ''
-    },
-    {
-      username: 'Socla',
-      name: 'Armand',
-      avatar: ''
-    }
-  ],
-  notYetPicked: [
-    {
-      username: 'Mmouky',
-      name: 'Kevin',
-      avatar: ''
-    },
-    {
-      username: 'Ulchero',
-      name: 'Benjamin',
       avatar: ''
     }
   ],
   picked: [
     {
-      username: 'Kevkev',
-      name: 'Kevin',
+      username: 'Tipi',
+      name: 'Pauline',
       avatar: ''
     },
     {
@@ -70,18 +70,8 @@ export default () => ({
       avatar: ''
     },
     {
-      username: 'Gwn',
-      name: 'Gwenael',
-      avatar: ''
-    },
-    {
-      username: 'CptBaroud',
-      name: 'Gurvan',
-      avatar: ''
-    },
-    {
-      username: 'Tipi',
-      name: 'Pauline',
+      username: 'Socla',
+      name: 'Armand',
       avatar: ''
     }
   ]
