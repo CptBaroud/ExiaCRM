@@ -94,7 +94,7 @@
             @keydown.enter="addKeyword(keywrd)"
           />
 
-          <v-text-field
+          <v-textarea
             v-model="context"
             :disabled="!getRight()"
             placeholder="Contexte"
@@ -150,7 +150,7 @@
                   <v-list-item-title>
                     <v-text-field
                       v-if="editConstraints"
-                      v-model="constraints[i]"
+                      v-model="constraints[i].name"
                     />
                     <template v-else>
                       {{ item.name }}
@@ -227,7 +227,7 @@
                   <v-list-item-title>
                     <v-text-field
                       v-if="editProblematics"
-                      v-model="problematics[i]"
+                      v-model="problematics[i].name"
                     />
                     <template v-else>
                       {{ item.name }}
@@ -294,7 +294,7 @@
                   <v-list-item-title>
                     <v-text-field
                       v-if="editHypothesis"
-                      v-model="hypothesises[i]"
+                      v-model="hypothesises[i].name"
                     />
                     <template v-else>
                       {{ item.name }}
@@ -585,11 +585,15 @@ export default {
       numProsit: 'role/numProsit'
     })
   },
+  mounted () {
+    this.getNumProsit()
+  },
   methods: {
     ...mapActions({
       fillPa: 'prosit/fillPa',
       addCer: 'prosit/addCer',
-      updateNumProsit: 'role/updateProsit'
+      getNumProsit: 'role/getNumProsit',
+      updateNumProsit: 'role/updateNumProsit'
     }),
 
     /**

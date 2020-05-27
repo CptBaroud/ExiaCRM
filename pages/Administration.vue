@@ -286,11 +286,13 @@ export default {
       controlOnStart: true
     }
   },
+  mounted () {
+    this.getNumProsit()
+  },
   computed: {
     ...mapGetters({
       roles: 'role/role',
-      equipe: 'role/equipe',
-      numProsit: 'role/numProsit'
+      equipe: 'role/equipe'
     }),
 
     numberOfPages () {
@@ -305,11 +307,18 @@ export default {
       set (value) {
         this.$store.commit('updateAlreadyPicked', value)
       }
+    },
+
+    numProsit: {
+      get () {
+        return this.$store.state.role.numProsit
+      }
     }
   },
   methods: {
     ...mapActions({
-      editProsit: 'role/updateProsit'
+      editProsit: 'role/updateNumProsit',
+      getNumProsit: 'role/getNumProsit'
     }),
 
     editNumProsit () {

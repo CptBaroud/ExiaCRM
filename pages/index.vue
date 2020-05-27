@@ -129,6 +129,33 @@
             </v-btn>
           </v-card-actions>
         </v-card>
+        <v-card style="border-radius: 20px" class="my-4">
+          <v-card-title>
+            Liens utiles
+          </v-card-title>
+          <v-card-subtitle>
+            Comme ça tu arretera de demander sur discord
+          </v-card-subtitle>
+          <v-card-text>
+            <v-list>
+              <v-list-item
+                v-for="(item, i) in links"
+                :key="i"
+                router
+                exact
+              >
+                <v-list-item-action>
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <a :href="item.to" style="text-decoration: none" target="_parent">
+                    <v-list-item-title v-text="item.title" />
+                  </a>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -152,24 +179,37 @@ export default {
   data () {
     return {
       user: this.$auth.user,
-      loggedIn: this.$auth.loggedIn
+      loggedIn: this.$auth.loggedIn,
+      links: [
+        {
+          icon: 'mdi-cloud-upload-outline',
+          title: 'Drive',
+          to: 'https://cesifr-my.sharepoint.com/personal/algaudon_cesi_fr/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Falgaudon%5Fcesi%5Ffr%2FDocuments%2FA3%202019%2D2020&originalPath=aHR0cHM6Ly9jZXNpZnItbXkuc2hhcmVwb2ludC5jb20vOmY6L2cvcGVyc29uYWwvYWxnYXVkb25fY2VzaV9mci9FZ0FvRG5GLVhrWkZoYkFUTUp2VEZyWUJFM0VZRUUyY053a19GempFdHBsVWtnP3J0aW1lPXY0N193X0FfMTBn'
+        }
+      ]
     }
   },
   computed: {
     ...mapGetters({
       equipe: 'role/currentEquipe',
       numEquipe: 'role/equipe',
-      prosit: 'role/numProsit',
+      prosit: {
+        get () {
+          return this.$store.state.role.numProsit
+        }
+      },
       picked: 'kivaferkoi/picked',
       cer: 'prosit/cer',
       promo: 'promo/promo'
     })
   },
   mounted () {
+    this.getNum()
     this.getCer()
   },
   methods: {
     ...mapActions({
+      getNum: 'role/getNumProsit',
       getACer: 'prosit/getCer'
     }),
 
