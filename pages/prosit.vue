@@ -11,6 +11,9 @@
     >
       <v-col
         cols="2"
+        xl="2"
+        lg="3"
+        md="3"
         class="mx-6"
       >
         <v-card
@@ -86,7 +89,7 @@
 
           <v-text-field
             v-model="keywrd"
-            placeholder="Mot clés"
+            placeholder="Mots clés"
             :disabled="!getRight()"
             filled
             background-color="rgba(253, 254, 251, 0.2)"

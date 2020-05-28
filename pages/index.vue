@@ -134,7 +134,7 @@
             Liens utiles
           </v-card-title>
           <v-card-subtitle>
-            Comme ça tu arretera de demander sur discord
+            Comme ça tu arrêteras de demander sur discord
           </v-card-subtitle>
           <v-card-text>
             <v-list>

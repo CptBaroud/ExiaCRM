@@ -19,7 +19,7 @@
           <v-card-text>
             <v-text-field
               v-model="toPick"
-              label="Nombre de personne à pick"
+              label="Nombre de personnes à pick"
               rounded
               outlined
               @keydown.enter="tirage"
@@ -203,10 +203,10 @@ export default {
             this.toPick = null
           }
         } else {
-          this.$toast.warning('T\'a pas le droit de faire ça ^^')
+          this.$toast.warning('T\'as pas le droit de faire ça ^^')
         }
       } else {
-        this.$toast.warning('T\'a pas le droit de faire ça ^^')
+        this.$toast.warning('T\'as pas le droit de faire ça ^^')
       }
     },
 

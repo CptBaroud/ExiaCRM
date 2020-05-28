@@ -183,7 +183,7 @@
             Erreur
           </v-card-title>
           <v-card-text>
-            T'a pas le droit de voir ça
+            T'as pas le droit de voir ça
           </v-card-text>
         </v-card>
       </v-flex>

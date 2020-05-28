@@ -369,7 +369,7 @@ export default {
           to: '/administration'
         }
       ],
-      title: 'Uyhegé'
+      title: 'PrositBoost'
     }
   },
   methods: {

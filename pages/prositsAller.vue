@@ -13,7 +13,7 @@
         <v-card style="border-radius: 15px">
           <v-card-title>
             <h1 class="display-1 pb-8">
-              Prosits Aller
+              Prosits Allers
             </h1>
             <v-spacer />
             <v-text-field
@@ -25,7 +25,7 @@
             />
           </v-card-title>
           <v-card-subtitle>
-            Vous retrouvez ici tout les prosits aller présents dans la base de données
+            Vous retrouvez ici tous les prosits allers présents dans la base de données
           </v-card-subtitle>
           <v-card-text>
             <v-data-table

@@ -46,19 +46,68 @@ export default {
     // On push les gens tiré au sort dans le tableau des personnes tirées au sort
     state.picked = temp
   },
-  /*
-    Mouvement d'NYP vers AP
+
+  /**
+   * Permet de set le state alreadyPicked
+   * @param state
+   * @param data
    */
-  setAlreadypicked (state, data) {
-    state.alreadyPicked.push(data)
-    state.notYetPicked.slice(state.notYetPicked.indexOf(data.name), 1)
+  setAlreadyPickedState (state, data) {
+    state.alreadyPicked = data
   },
 
-  updateAlreadyPicked (state, data) {
-    state.alreadyPicked = data
+  /**
+   * Permet de set le state notYetPicked
+   * @param state
+   * @param data
+   */
+  setNotYetPikedState (state, data) {
+    state.notYetPicked = data
+  },
+
+  /**
+   * Permet de set le state Picked
+   * @param state
+   * @param data
+   */
+  setPickedArrayState (state, data) {
+    state.Picked = data
+  },
+
+  /**
+   * Permet de clear le state alreadyPicked
+   * @param state
+   * @param data
+   */
+  clearAlreadyPickedState (state, data) {
+    state.alreadyPicked = []
+  },
+
+  /**
+   * Permet de clear le state notYetPicked
+   * @param state
+   * @param data
+   */
+  clearNotYetPikedState (state, data) {
+    state.notYetPicked = []
+  },
+
+  /**
+   * Permet de clear le state Picked
+   * @param state
+   * @param data
+   */
+  clearPickedArrayState (state, data) {
+    state.Picked = []
   }
 }
 
+/**
+ * Fonction permettant de recupérer un nombre random
+ * entre 0 et la taille de notyetPicked
+ * @param state
+ * @returns {null|number}
+ */
 function getRandomInt (state) {
   const size = state.notYetPicked.length
   if (size > 0) {
@@ -67,11 +116,12 @@ function getRandomInt (state) {
   return null
 }
 
-// eslint-disable-next-line no-unused-vars
-function getALlLenth (state) {
-  return state.notYetPicked.length + state.alreadyPicked.length
-}
-
+/**
+ * Permet de tirer au sort un users
+ * @param state
+ * @param size
+ * @param array
+ */
 function pick (state, size, array) {
   for (let a = 0; a < size; a++) {
     const random = getRandomInt(state)
