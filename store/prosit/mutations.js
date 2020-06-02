@@ -25,5 +25,9 @@ export default {
   },
   addCer (state, data) {
     state.cer = { name: data.name, data }
+  },
+  editKeyword (state, data) {
+    state.keywords.splice(data.id, 1)
+    state.keywords.push(data)
   }
 }

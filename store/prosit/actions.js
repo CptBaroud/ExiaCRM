@@ -22,6 +22,9 @@ export default {
   fillPa: (context, pa) => {
     context.commit('fillPa', pa)
   },
+  editKeyword (context, data) {
+    context.commit('editKeyword', data)
+  },
   addCer: (context, pa) => {
     return new Promise((resolve, reject) => {
       axios.post(process.env.API_URL + '/prosit/', pa)

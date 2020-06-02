@@ -11,5 +11,8 @@ export default {
   },
   allPa (state) {
     return state.allPa
+  },
+  keywords (state) {
+    return state.keywords
   }
 }
