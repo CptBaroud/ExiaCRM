@@ -1,4 +1,4 @@
-import { axios } from 'axios'
+import axios from 'axios'
 
 export default {
   /**
@@ -18,9 +18,9 @@ export default {
    */
   getAlreadyPicked (context) {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.API_URL + '/alreadyPicked')
+      axios.get(process.env.API_URL + '/kivaferkoi/alreadyPicked')
         .then((response) => {
-          context.commit('setAlreadyPickedState', response)
+          context.commit('setAlreadyPickedState', response.data)
           resolve(response)
         }).catch((error) => {
           reject(error)
@@ -35,9 +35,9 @@ export default {
    */
   getNotYetPicked (context) {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.API_URL + '/alreadyPicked')
+      axios.get(process.env.API_URL + '/kivaferkoi/NotYetPicked')
         .then((response) => {
-          context.commit('setNotYetPikedState', response)
+          context.commit('setNotYetPikedState', response.data)
           resolve(response)
         }).catch((error) => {
           reject(error)
@@ -52,9 +52,9 @@ export default {
    */
   getPicked (context) {
     return new Promise((resolve, reject) => {
-      axios.get(process.env.API_URL + '/alreadyPicked')
+      axios.get(process.env.API_URL + '/kivaferkoi/Picked')
         .then((response) => {
-          context.commit('setPickedState', response)
+          context.commit('setPickedArrayState', response.data)
           resolve(response)
         }).catch((error) => {
           reject(error)
@@ -67,11 +67,10 @@ export default {
    * @param context
    * @returns {Promise<unknown>}
    */
-  clearAlreadyPicked (context) {
+  clearAlreadyPicked () {
     return new Promise((resolve, reject) => {
-      axios.delete(process.env.API_URL + '/alreadyPicked')
+      axios.delete(process.env.API_URL + '/kivaferkoi/alreadyPicked')
         .then((response) => {
-          context.commit('clearAlreadyPickedState', response)
           resolve(response)
         }).catch((error) => {
           reject(error)
@@ -84,11 +83,10 @@ export default {
    * @param context
    * @returns {Promise<unknown>}
    */
-  clearNotYetPicked (context) {
+  clearNotYetPicked () {
     return new Promise((resolve, reject) => {
-      axios.delete(process.env.API_URL + '/NotYetPicked')
+      axios.delete(process.env.API_URL + '/kivaferkoi/notYetPicked')
         .then((response) => {
-          context.commit('clearAlreadyPickedState', response)
           resolve(response)
         }).catch((error) => {
           reject(error)
@@ -101,11 +99,10 @@ export default {
    * @param context
    * @returns {Promise<unknown>}
    */
-  clearPicked (context) {
+  clearPicked () {
     return new Promise((resolve, reject) => {
-      axios.delete(process.env.API_URL + '/Picked')
+      axios.delete(process.env.API_URL + '/kivaferkoi/picked')
         .then((response) => {
-          context.commit('clearAlreadyPickedState', response)
           resolve(response)
         }).catch((error) => {
           reject(error)
@@ -118,11 +115,11 @@ export default {
    * @param context
    * @returns {Promise<unknown>}
    */
-  fillAlreadyPicked (context) {
+  fillAlreadyPicked (context, data) {
     return new Promise((resolve, reject) => {
-      axios.post(process.env.API_URL + '/AlreadyPicked')
+      axios.post(process.env.API_URL + '/kivaferkoi/alreadyPicked', { alreadyPicked: data })
         .then((response) => {
-          context.commit('setAlreadyPickedState', response)
+          context.commit('setAlreadyPickedState', data)
           resolve(response)
         }).catch((error) => {
           reject(error)
@@ -135,11 +132,11 @@ export default {
    * @param context
    * @returns {Promise<unknown>}
    */
-  fillNotYetPicked (context) {
+  fillNotYetPicked (context, data) {
     return new Promise((resolve, reject) => {
-      axios.post(process.env.API_URL + '/AlreadyPicked')
+      axios.post(process.env.API_URL + '/kivaferkoi/notYetPicked', { notYetPicked: data })
         .then((response) => {
-          context.commit('setNotYetPickedState', response)
+          context.commit('setNotYetPickedState', data)
           resolve(response)
         }).catch((error) => {
           reject(error)
@@ -152,11 +149,11 @@ export default {
    * @param context
    * @returns {Promise<unknown>}
    */
-  fillPicked (context) {
+  fillPicked (context, data) {
     return new Promise((resolve, reject) => {
-      axios.post(process.env.API_URL + '/Picked')
+      axios.post(process.env.API_URL + '/kivaferkoi/picked', { picked: data })
         .then((response) => {
-          context.commit('setPickedState', response)
+          context.commit('setPickedState', data)
           resolve(response)
         }).catch((error) => {
           reject(error)

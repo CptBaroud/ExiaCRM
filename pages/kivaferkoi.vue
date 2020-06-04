@@ -52,7 +52,7 @@
                 >
                   <v-list-item-avatar>
                     <v-img v-if="item.avatar.length > 1" :src="item.avatar" />
-                    <v-avatar v-else color="primary">
+                    <v-avatar v-else color="steelBlue">
                       <span class="white--text headline">{{ item.name.substr(0, 1) }}</span>
                     </v-avatar>
                   </v-list-item-avatar>
@@ -188,16 +188,95 @@ export default {
       pa: 'prosit/pa'
     })
   },
+  mounted () {
+    this.getAlreadyPicked()
+    this.getNotYetPicked()
+    this.getPicked()
+  },
   methods: {
     ...mapActions({
-      getRandom: 'kivaferkoi/getRandom'
+      getRandom: 'kivaferkoi/getRandom',
+      getPicked: 'kivaferkoi/getPicked',
+
+      // Actions relatives a AP
+      getAlreadyPicked: 'kivaferkoi/getAlreadyPicked',
+      clearAlreadyPicked: 'kivaferkoi/clearAlreadyPicked',
+      fillAlreadyPicked: 'kivaferkoi/fillAlreadyPicked',
+
+      // Actions relatives a NP
+      getNotYetPicked: 'kivaferkoi/getNotYetPicked',
+      clearPicked: 'kivaferkoi/clearPicked',
+      fillPicked: 'kivaferkoi/fillPicked',
+
+      // Actins relatives a P
+      clearNotYetPicked: 'kivaferkoi/clearNotYetPicked',
+      fillNotYetPicked: 'kivaferkoi/fillNotYetPicked'
     }),
 
+    /**
+     * Permet de faire le tirage du kivaferkoi
+     * Dans un premier temps on tigger le chgmt au niveau des store
+     * Puis on push les data sur la base de données
+     */
     tirage () {
+      // Si l'utilsateur est bien connecter
       if (this.$auth.user != null) {
+        // Si l'utilisateur est bien admin
         if (this.$auth.user[0].isAdmin) {
+          // Si le nombre d'user a pick est bien inférieur au nombnre de personnes à tiré
           if (this.toPick <= this.getAllSize()) {
-            this.getRandom(this.toPick)
+            this.getRandom(this.toPick).then(() => {
+              // On applique les changements des store a la base MySQL
+              // On clear la table AP
+              this.clearAlreadyPicked().then((response) => {
+                if (response.data.status !== 'Erreur') {
+                  // Si le clear est passer on push les nv tab dans la base
+                  this.fillAlreadyPicked(this.alreadyPicked).then((response) => {
+                    if (response.data.status !== 'Erreur') {
+                      this.$toast.success('La table à été update')
+                    } else {
+                      this.$toast.error(response.data.message)
+                    }
+                  })
+                } else {
+                  this.$toast.error('Le clear de la table AP n\'est pas passer')
+                }
+              })
+
+              // On applique les changements des store a la base MySQL
+              // On clear la table NP
+              this.clearNotYetPicked().then((response) => {
+                if (response.data.status !== 'Erreur') {
+                  // Si le clear est passer on push le nv tab
+                  this.fillNotYetPicked(this.notYetPicked).then((response) => {
+                    if (response.data.status !== 'Erreur') {
+                      this.$toast.success('La table à été update')
+                    } else {
+                      this.$toast.error(response.data.message)
+                    }
+                  })
+                } else {
+                  this.$toast.error('Le clear de la table AP n\'est pas passer')
+                }
+              })
+
+              // On applique les changements des store a la base MySQL
+              // On clear la table P
+              this.clearPicked().then((response) => {
+                if (response.data.status !== 'Erreur') {
+                  // Si le clear est passer on push le nv tab
+                  this.fillPicked(this.picked).then((response) => {
+                    if (response.data.status !== 'Erreur') {
+                      this.$toast.success('La table à été update')
+                    } else {
+                      this.$toast.error(response.data.message)
+                    }
+                  })
+                } else {
+                  this.$toast.error('Le clear de la table AP n\'est pas passer')
+                }
+              })
+            })
           } else {
             this.$toast.error('Le nonbre est trop grand')
             this.toPick = null
@@ -210,6 +289,10 @@ export default {
       }
     },
 
+    /**
+     * Compte le nombre d'utilisateur totaux
+     * @returns {number}
+     */
     getAllSize () {
       return this.alreadyPicked.length + this.notYetPicked.length
     },

@@ -1,6 +1,5 @@
 export default () => ({
-  alreadyPicked: [
-    {
+  alreadyPicked: [], /* [    {
       username: 'Mmouky',
       name: 'Kevin',
       avatar: ''
@@ -30,7 +29,7 @@ export default () => ({
       name: 'Armand',
       avatar: ''
     }
-  ],
+  ] */
   notYetPicked: [
     {
       username: 'Peliagos',

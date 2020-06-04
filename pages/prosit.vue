@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container fluid align="center">
     <v-label>
       <h1 class="display-1 mb-4">
         Prosit Maker
@@ -14,6 +14,8 @@
         xl="2"
         lg="3"
         md="3"
+        sm="7"
+        xs="9"
         class="mx-6"
       >
         <v-card
@@ -45,6 +47,11 @@
       </v-col>
       <v-col
         cols="7"
+        xl="7"
+        lg="7"
+        md="7"
+        sm="9"
+        xs="9"
       >
         <v-form
           ref="form"
@@ -578,7 +585,14 @@ export default {
       hypothesises: [],
       hypothesis: '',
       paArray: [],
-      pa: ''
+      pa: '',
+      test: {
+        num_arete: '',
+        num_jour: '',
+        plage_horaire: '',
+        num_periode: '',
+        nb_vehicles: ''
+      }
     }
   },
   computed: {

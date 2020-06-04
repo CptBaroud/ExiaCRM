@@ -71,7 +71,7 @@ export default {
    * @param data
    */
   setPickedArrayState (state, data) {
-    state.Picked = data
+    state.picked = data
   },
 
   /**
