@@ -196,7 +196,6 @@ export default {
   methods: {
     ...mapActions({
       getRandom: 'kivaferkoi/getRandom',
-      getPicked: 'kivaferkoi/getPicked',
 
       // Actions relatives a AP
       getAlreadyPicked: 'kivaferkoi/getAlreadyPicked',
@@ -209,6 +208,7 @@ export default {
       fillPicked: 'kivaferkoi/fillPicked',
 
       // Actins relatives a P
+      getPicked: 'kivaferkoi/getPicked',
       clearNotYetPicked: 'kivaferkoi/clearNotYetPicked',
       fillNotYetPicked: 'kivaferkoi/fillNotYetPicked'
     }),

@@ -206,11 +206,13 @@ export default {
   mounted () {
     this.getNum()
     this.getCer()
+    this.getPicked()
   },
   methods: {
     ...mapActions({
       getNum: 'role/getNumProsit',
-      getACer: 'prosit/getCer'
+      getACer: 'prosit/getCer',
+      getPicked: 'kivaferkoi/getPicked'
     }),
 
     getCer () {
