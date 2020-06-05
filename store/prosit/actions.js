@@ -22,9 +22,7 @@ export default {
   fillPa: (context, pa) => {
     context.commit('fillPa', pa)
   },
-  editKeyword (context, data) {
-    context.commit('editKeyword', data)
-  },
+
   addCer: (context, pa) => {
     return new Promise((resolve, reject) => {
       axios.post(process.env.API_URL + '/prosit/', pa)
@@ -38,6 +36,7 @@ export default {
         })
     })
   },
+
   getCer: (context, numProsit) => {
     return new Promise((resolve, reject) => {
       axios.get(process.env.API_URL + '/prosit/' + numProsit)
@@ -51,6 +50,7 @@ export default {
         })
     })
   },
+
   getAllPa: (context) => {
     return new Promise((resolve, reject) => {
       axios.get(process.env.API_URL + '/prosit/get/all')
@@ -60,6 +60,30 @@ export default {
         }).catch((onerror) => {
         // eslint-disable-next-line no-console
           console.error(onerror)
+          reject(onerror)
+        })
+    })
+  },
+
+  getKeyword: (context) => {
+    return new Promise((resolve, reject) => {
+      axios.get(process.env.API_URL + '/prosit/get/allKeywords')
+        .then((response) => {
+          context.commit('fillKeywords', response.data)
+          resolve(response.data)
+        }).catch((onerror) => {
+          reject(onerror)
+        })
+    })
+  },
+
+  editKeyword: (context, data) => {
+    return new Promise((resolve, reject) => {
+      axios.put(process.env.API_URL + '/prosit/update/keyword', { keyword: data })
+        .then((response) => {
+          context.commit('editKeyword', response.data)
+          resolve(response.data)
+        }).catch((onerror) => {
           reject(onerror)
         })
     })

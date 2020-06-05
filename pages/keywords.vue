@@ -1,26 +1,14 @@
 <template>
   <v-container>
-    <v-row
+    <v-layout
       column
       justify-center
       align-center
     >
-      <v-col
-        cols="2"
-      >
-        <v-card style="border-radius: 20px">
-          <v-card-title>
-            Options
-          </v-card-title>
-          <v-card-text>
-            <v-autocomplete
-              label="Choix du prosit"
-            />
-          </v-card-text>
-        </v-card>
-      </v-col>
-      <v-col
-        cols="6"
+      <v-flex
+        xs13
+        sm8
+        md8
       >
         <v-card style="border-radius: 20px">
           <v-card-title>
@@ -37,7 +25,7 @@
             />
           </v-card-title>
           <v-card-subtitle>
-            Vous retrouvez ici les mots clés du prosit que vous avez choisis
+            Vous retrouvez ici les mots clés de tout les prosits
           </v-card-subtitle>
           <v-card-text>
             <v-data-table
@@ -104,8 +92,8 @@
             </v-data-table>
           </v-card-text>
         </v-card>
-      </v-col>
-    </v-row>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -121,12 +109,11 @@ export default {
       search: '',
       dialog: false,
       headers: [
-        { text: 'PA n°', value: 'num_prosit', align: 'num_prosit' },
+        { text: 'PA n°', value: 'num_prosit' },
         { text: 'Mot clé', value: 'name' },
         { text: 'Définition', value: 'definition' },
         { text: 'Actions', value: 'action' }
       ],
-      num_prosit: 18,
       wikiWords: []
     }
   },
@@ -137,14 +124,17 @@ export default {
       }
     }
   },
+  mounted () {
+    this.getKwrd()
+  },
   methods: {
     ...mapActions({
-      editKwrd: 'prosit/editKeyword'
+      editKwrd: 'prosit/editKeyword',
+      getKwrd: 'prosit/getKeyword'
     }),
 
     getWikipage (object) {
       const out = []
-      console.dir(object)
 
       axios.get('https://fr.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&search=' + object.name,
         {
@@ -183,7 +173,8 @@ export default {
     },
 
     editKeyword (keyword) {
-      this.editKwrd(keyword)
+      console.dir(keyword)
+      this.editKwrd(keyword).then(this.dialog = false)
     }
   }
 }
