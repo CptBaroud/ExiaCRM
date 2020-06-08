@@ -145,9 +145,17 @@
                   </v-list-item-title>
                   <v-list-item-action>
                     <v-icon
+                      v-if="!editConstraints"
                       @click="editConstraints = !editConstraints"
                     >
                       mdi-pencil
+                    </v-icon>
+                    <v-icon
+                      v-else
+                      color="pantoneGreen"
+                      @click="editConstraints = !editConstraints"
+                    >
+                      mdi-check
                     </v-icon>
                   </v-list-item-action>
                 </v-list-item>
@@ -222,9 +230,17 @@
                   </v-list-item-title>
                   <v-list-item-action>
                     <v-icon
+                      v-if="!editProblematics"
                       @click="editProblematics = !editProblematics"
                     >
                       mdi-pencil
+                    </v-icon>
+                    <v-icon
+                      v-else
+                      color="pantoneGreen"
+                      @click="editProblematics = !editProblematics"
+                    >
+                      mdi-check
                     </v-icon>
                   </v-list-item-action>
                 </v-list-item>
@@ -289,9 +305,17 @@
                   </v-list-item-title>
                   <v-list-item-action>
                     <v-icon
+                      v-if="!editHypothesis"
                       @click="editHypothesis = !editHypothesis"
                     >
                       mdi-pencil
+                    </v-icon>
+                    <v-icon
+                      v-else
+                      color="pantoneGreen"
+                      @click="editHypothesis = !editHypothesis"
+                    >
+                      mdi-check
                     </v-icon>
                   </v-list-item-action>
                 </v-list-item>
@@ -351,9 +375,17 @@
                 </v-list-item-title>
                 <v-list-item-action>
                   <v-icon
+                    v-if="!editPa"
                     @click="editPa = !editPa"
                   >
                     mdi-pencil
+                  </v-icon>
+                  <v-icon
+                    v-else
+                    color="pantoneGreen"
+                    @click="editPa = !editPa"
+                  >
+                    mdi-check
                   </v-icon>
                 </v-list-item-action>
               </v-list-item>

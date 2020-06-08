@@ -193,19 +193,14 @@ export default {
     ...mapGetters({
       equipe: 'role/currentEquipe',
       numEquipe: 'role/equipe',
-      prosit: {
-        get () {
-          return this.$store.state.role.numProsit
-        }
-      },
+      prosit: 'role/numProsit',
       picked: 'kivaferkoi/picked',
       cer: 'prosit/cer',
       promo: 'promo/promo'
     })
   },
   mounted () {
-    this.getNum()
-    this.getCer()
+    this.getNum().then(this.getCer())
     this.getPicked()
   },
   methods: {
@@ -216,7 +211,7 @@ export default {
     }),
 
     getCer () {
-      this.getACer(this.prosit)
+      this.getACer(this.prosit - 1)
     },
 
     /**
@@ -224,10 +219,13 @@ export default {
      * a l'aide des methodes adjointes
      **/
     createDocx (object) {
+      // eslint-disable-next-line no-console
+      console.dir(object)
+
       // Create document
       const doc = new Document()
       // On crée la première page
-      if (object.size > 0) {
+      if (object.name !== undefined) {
         doc.addSection({
           // Contenu de la page
           children: [

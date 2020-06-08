@@ -37,7 +37,8 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    'plugins/draggable.js'
+    'plugins/draggable.js',
+    'plugins/vuebar.js'
   ],
   /*
   ** Nuxt.js dev-modules

@@ -27,7 +27,7 @@ export default {
     state.cer = { name: data.name, data }
   },
   editKeyword (state, data) {
-    state.keywords.splice(data.id, 1)
+    state.keywords.splice(state.keywords.indexOf(data.id), 1)
     state.keywords.push(data)
   }
 }

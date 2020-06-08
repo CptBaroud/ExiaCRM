@@ -10,7 +10,7 @@
         sm8
         md8
       >
-        <v-card style="border-radius: 20px">
+        <v-card style="border-radius: 20px" max-width="750">
           <v-card-title>
             <h1 class="display-1 pb-8">
               Mots clés du prosit
@@ -32,10 +32,26 @@
               :headers="headers"
               :items="keywords"
               :search="search"
+              :loading="done"
             >
+              <template v-slot:item.action="{ item }">
+                <v-btn
+                  icon
+                  @click="getWikipage(item)"
+                >
+                  <v-icon>
+                    mdi-comment-edit-outline
+                  </v-icon>
+                </v-btn>
+              </template>
+              <template v-slot:item.definiton="{ item }">
+                <p class="truncate">
+                  {{ item.definiton }}
+                </p>
+              </template>
               <template v-slot:top>
-                <v-dialog v-model="dialog" max-width="750px">
-                  <v-card>
+                <v-dialog v-model="dialog" style="border-radius: 20px" max-width="750px" :class="scrollbarTheme">
+                  <v-card style="border-radius: 20px">
                     <v-card-title>
                       <span class="headline">Définitions</span>
                     </v-card-title>
@@ -61,6 +77,7 @@
                             </v-chip>
                             <v-textarea
                               v-model="keyword.definition"
+                              v-textarea
                               filled
                               background-color="rgba(253, 254, 251, 0.2)"
                               rounded
@@ -78,16 +95,6 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-              </template>
-              <template v-slot:item.action="{ item }">
-                <v-btn
-                  icon
-                  @click="getWikipage(item)"
-                >
-                  <v-icon>
-                    mdi-comment-edit-outline
-                  </v-icon>
-                </v-btn>
               </template>
             </v-data-table>
           </v-card-text>
@@ -108,10 +115,11 @@ export default {
     return {
       search: '',
       dialog: false,
+      done: true,
       headers: [
         { text: 'PA n°', value: 'num_prosit' },
         { text: 'Mot clé', value: 'name' },
-        { text: 'Définition', value: 'definition' },
+        { text: 'Définition', value: 'definiton', width: 250 },
         { text: 'Actions', value: 'action' }
       ],
       wikiWords: []
@@ -122,16 +130,27 @@ export default {
       get () {
         return this.$store.state.prosit.keywords
       }
+    },
+
+    scrollbarTheme () {
+      return this.$vuetify.theme.dark ? 'dark' : 'light'
     }
   },
   mounted () {
-    this.getKwrd()
+    this.getKeywords()
   },
   methods: {
     ...mapActions({
       editKwrd: 'prosit/editKeyword',
       getKwrd: 'prosit/getKeyword'
     }),
+
+    getKeywords () {
+      this.getKwrd()
+      setTimeout(() => {
+        this.done = false
+      }, 700)
+    },
 
     getWikipage (object) {
       const out = []
@@ -143,7 +162,7 @@ export default {
           }
         })
         .then((response) => {
-          if (response.data[1].length > 1) {
+          if (response.data[1].length >= 1) {
             response.data[1].forEach(function (item) {
               axios.get('https://fr.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&origin=*&titles=' + item,
                 {
@@ -181,5 +200,48 @@ export default {
 </script>
 
 <style scoped>
+  .light::-webkit-scrollbar {
+    width: 15px;
+  }
 
+  .light::-webkit-scrollbar-track {
+    background: #e6e6e6;
+    border-left: 1px solid #dadada;
+  }
+
+  .light::-webkit-scrollbar-thumb {
+    background: #b0b0b0;
+    border: solid 3px #e6e6e6;
+    border-radius: 7px;
+  }
+
+  .light::-webkit-scrollbar-thumb:hover {
+    background: black;
+  }
+
+  .dark::-webkit-scrollbar {
+    width: 15px;
+  }
+
+  .dark::-webkit-scrollbar-track {
+    background: #202020;
+    border-left: 1px solid #2c2c2c;
+  }
+
+  .dark::-webkit-scrollbar-thumb {
+    background: #3e3e3e;
+    border: solid 3px #202020;
+    border-radius: 7px;
+  }
+
+  .dark::-webkit-scrollbar-thumb:hover {
+    background: white;
+  }
+
+  .truncate {
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 </style>

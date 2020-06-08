@@ -1,6 +1,7 @@
 <template>
   <v-app
     dark
+    class="scroll"
   >
     <v-app-bar
       :clipped-left="clipped"
@@ -32,7 +33,7 @@
           v-slot:default="{ hover }"
           open-delay="200"
         >
-          <v-list-item>
+          <v-list-item router to="/profil">
             <v-list-item-avatar>
               <v-img :src="$auth.user[0].avatar" />
             </v-list-item-avatar>
@@ -451,5 +452,24 @@ export default {
   /*Change text in autofill textbox*/
   input:-webkit-autofill {
     -webkit-text-fill-color: white !important;
+  }
+
+  .scroll::-webkit-scrollbar {
+    width: 15px;
+  }
+
+  .scroll::-webkit-scrollbar-track {
+    background: #202020;
+    border-left: 1px solid #2c2c2c;
+  }
+
+  .scroll::-webkit-scrollbar-thumb {
+    background: #3e3e3e;
+    border: solid 3px #202020;
+    border-radius: 7px;
+  }
+
+  .scroll::-webkit-scrollbar-thumb:hover {
+    background: white;
   }
 </style>
