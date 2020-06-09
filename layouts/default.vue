@@ -1,7 +1,6 @@
 <template>
   <v-app
     dark
-    class="scroll"
   >
     <v-app-bar
       :clipped-left="clipped"
@@ -241,7 +240,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" style="position: fixed">
         <path fill="#C72E38" fill-opacity="1" d="M0,288L60,256C120,224,240,160,360,149.3C480,139,600,181,720,170.7C840,160,960,96,1080,90.7C1200,85,1320,139,1380,165.3L1440,192L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z" />
       </svg>
-      <v-container>
+      <v-container class="scroll">
         <nuxt />
       </v-container>
     </v-content>
@@ -360,6 +359,11 @@ export default {
           to: '/prositsAller'
         },
         {
+          icon: 'mdi-book-open-variant',
+          title: 'Mots clés',
+          to: '/keywords'
+        },
+        {
           icon: 'mdi-account-group',
           title: 'Kivaferkoi',
           to: '/kivaferkoi'
@@ -381,7 +385,13 @@ export default {
           password: this.password
         }
       })
-        .then(this.$toast.success('Tu as été connecté avec succès'))
+        .then((response) => {
+          if (response.data.status !== 'error') {
+            this.$toast.success('Tu as été connecté avec succès')
+          } else {
+            this.$toast.error(response.data.message)
+          }
+        })
         .catch((err) => {
           // eslint-disable-next-line no-console
           console.error(err)
@@ -396,7 +406,6 @@ export default {
     register () {
       if (this.$refs.form.validate()) {
         if (this.registerInfo.questionSecrete.toString().toLowerCase() === 'amiel') {
-          console.dir(this.registerInfo)
           this.dialog = false
           this.valid = true
           axios.post(process.env.API_URL + '/login/register', {
@@ -411,9 +420,13 @@ export default {
                 password: this.registerInfo.password
               }
             })
-              .then(
-                this.$toast.success('Tu as été connecté avec succès')
-              )
+              .then((response) => {
+                if (response.data.status !== 'error') {
+                  this.$toast.success('Tu as été connecté avec succès')
+                } else {
+                  this.$toast.error(response.data.message)
+                }
+              })
               .catch((err) => {
                 // eslint-disable-next-line no-console
                 console.error(err)

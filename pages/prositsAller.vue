@@ -137,11 +137,18 @@ export default {
               this.createHeading('Mots Clés'),
               this.createSpace(),
               ...response.keywords
-                .map((education) => {
+                .map((item) => {
                   const arr = []
-                  arr.push(
-                    this.createListItem(education.name)
-                  )
+                  if (item.definiton.length > 1) {
+                    arr.push(
+                      this.createListItem(item.name + ' : ' + item.definiton)
+                    )
+                  } else {
+                    arr.push(
+                      this.createListItem(item.name)
+                    )
+                  }
+                  arr.push(this.createListItem(''))
                   return arr
                 })
                 .reduce((prev, curr) => prev.concat(curr), []),

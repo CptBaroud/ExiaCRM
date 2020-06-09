@@ -39,8 +39,11 @@
                   icon
                   @click="getWikipage(item)"
                 >
-                  <v-icon>
+                  <v-icon v-if="item.definiton.length === 0">
                     mdi-comment-edit-outline
+                  </v-icon>
+                  <v-icon v-else>
+                    mdi-pencil
                   </v-icon>
                 </v-btn>
               </template>
@@ -50,15 +53,33 @@
                 </p>
               </template>
               <template v-slot:top>
-                <v-dialog v-model="dialog" style="border-radius: 20px" max-width="750px" :class="scrollbarTheme">
-                  <v-card style="border-radius: 20px">
-                    <v-card-title>
-                      <span class="headline">Définitions</span>
-                    </v-card-title>
+                <v-dialog v-model="dialog" max-width="750px" scrollable>
+                  <v-flex class="overflow-y-auto" :class="scrollbarTheme">
+                    <v-card>
+                      <v-btn
+                        icon
+                        top
+                        text
+                        small
+                        right
+                        absolute
+                        @click="dialog = false"
+                      >
+                        <v-icon
+                          color="red"
+                        >
+                          mdi-close
+                        </v-icon>
+                      </v-btn>
 
-                    <v-card-text>
-                      <v-container>
+                      <v-card-title>
+                        <span class="headline">Définitions</span>
+                      </v-card-title>
+
+                      <v-card-text>
                         <v-row
+                          class="overflow-y-auto"
+                          :class="scrollbarTheme"
                           align="center"
                           justify="start"
                         >
@@ -77,23 +98,18 @@
                             </v-chip>
                             <v-textarea
                               v-model="keyword.definition"
-                              v-textarea
+                              auto-grow
                               filled
                               background-color="rgba(253, 254, 251, 0.2)"
                               rounded
+                              counter
+                              hint="En vrais essaye de faire quelque chose de court quand meme"
                             />
                           </v-col>
                         </v-row>
-                      </v-container>
-                    </v-card-text>
-
-                    <v-card-actions>
-                      <v-spacer />
-                      <v-btn color="blue darken-1" text @click="dialog = false">
-                        Cancel
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
+                      </v-card-text>
+                    </v-card>
+                  </v-flex>
                 </v-dialog>
               </template>
             </v-data-table>
@@ -154,41 +170,51 @@ export default {
 
     getWikipage (object) {
       const out = []
+      if (object.definiton.length === 0) {
+        axios.get('https://fr.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&search=' + object.name,
+          {
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8'
+            }
+          })
+          .then((response) => {
+            if (response.data[1].length >= 1) {
+              response.data[1].forEach(function (item) {
+                axios.get('https://fr.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&origin=*&titles=' + item,
+                  {
+                    headers: {
+                      'Content-Type': 'application/json; charset=UTF-8'
+                    }
+                  }).then((response) => {
+                  const key = Object.keys(response.data.query.pages)[0]
 
-      axios.get('https://fr.wikipedia.org/w/api.php?action=opensearch&format=json&origin=*&search=' + object.name,
-        {
-          headers: {
-            'Content-Type': 'application/json; charset=UTF-8'
-          }
-        })
-        .then((response) => {
-          if (response.data[1].length >= 1) {
-            response.data[1].forEach(function (item) {
-              axios.get('https://fr.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&origin=*&titles=' + item,
-                {
-                  headers: {
-                    'Content-Type': 'application/json; charset=UTF-8'
-                  }
-                }).then((response) => {
-                const key = Object.keys(response.data.query.pages)[0]
-
-                out.push({
-                  id: object.id,
-                  name: item,
-                  definition: response.data.query.pages[key].extract,
-                  num_prosit: object.num_prosit
+                  out.push({
+                    id: object.id,
+                    name: item,
+                    definition: response.data.query.pages[key].extract,
+                    num_prosit: object.num_prosit
+                  })
                 })
               })
-            })
-            this.wikiWords = out
-            this.dialog = true
-          } else {
-            this.$toast.warning('Il n\'y a aucune page wikipédia correspondante malheureusement')
-          }
-        }).catch((onerror) => {
-        // eslint-disable-next-line no-console
-          console.error(onerror)
+              this.wikiWords = out
+              this.dialog = true
+            } else {
+              this.$toast.warning('Il n\'y a aucune page wikipédia correspondante malheureusement')
+            }
+          }).catch((onerror) => {
+          // eslint-disable-next-line no-console
+            console.error(onerror)
+          })
+      } else {
+        this.wikiWords = []
+        this.wikiWords.push({
+          id: object.id,
+          name: object.name,
+          definition: object.definiton,
+          num_prosit: object.num_prosit
         })
+        this.dialog = true
+      }
     },
 
     editKeyword (keyword) {

@@ -98,6 +98,7 @@
             v-model="keywrd"
             placeholder="Mots clés"
             :disabled="!getRight()"
+            hint="Merci de ne pas faire d'abréviations / de coller les mots clées (ex : Pb d'optimisation / décisions) PS: je sais qui est scribe je te retrouverais si tu suis pas ces instructions"
             filled
             background-color="rgba(253, 254, 251, 0.2)"
             rounded
@@ -617,14 +618,7 @@ export default {
       hypothesises: [],
       hypothesis: '',
       paArray: [],
-      pa: '',
-      test: {
-        num_arete: '',
-        num_jour: '',
-        plage_horaire: '',
-        num_periode: '',
-        nb_vehicles: ''
-      }
+      pa: ''
     }
   },
   computed: {
