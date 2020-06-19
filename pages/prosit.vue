@@ -31,7 +31,9 @@
               :key="idx"
             >
               <v-list-item-avatar>
-                <v-img :src="item.avatar" />
+                <v-icon large>
+                  {{ item.icon }}
+                </v-icon>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title>
@@ -122,13 +124,14 @@
             <v-col
               cols="4"
             >
-              <v-text-field
+              <v-textarea
                 v-model="constraint"
                 :disabled="!getRight()"
                 placeholder="Contraintes"
                 filled
                 background-color="rgba(253, 254, 251, 0.2)"
                 rounded
+                auto-grow
                 @keydown.enter="addConstraint(constraint)"
               />
             </v-col>
@@ -167,9 +170,10 @@
                   exact
                 >
                   <v-list-item-title>
-                    <v-text-field
+                    <v-textarea
                       v-if="editConstraints"
                       v-model="constraints[i].name"
+                      auto-grow
                     />
                     <template v-else>
                       {{ item.name }}
@@ -207,12 +211,13 @@
             <v-col
               cols="4"
             >
-              <v-text-field
+              <v-textarea
                 v-model="problematic"
                 :disabled="!getRight()"
                 placeholder="Problématique"
                 filled
                 rounded
+                auto-grow
                 background-color="rgba(253, 254, 251, 0.2)"
                 @keydown.enter="addProblematic(problematic)"
               />
@@ -252,9 +257,10 @@
                   exact
                 >
                   <v-list-item-title>
-                    <v-text-field
+                    <v-textarea
                       v-if="editProblematics"
                       v-model="problematics[i].name"
+                      auto-grow
                     />
                     <template v-else>
                       {{ item.name }}
@@ -282,12 +288,13 @@
             <v-col
               cols="4"
             >
-              <v-text-field
+              <v-textarea
                 v-model="hypothesis"
                 :disabled="!getRight()"
                 placeholder="Hypothèses"
                 filled
                 rounded
+                auto-grow
                 background-color="rgba(253, 254, 251, 0.2)"
                 @keydown.enter="addHypothesis(hypothesis)"
               />
@@ -327,9 +334,10 @@
                   exact
                 >
                   <v-list-item-title>
-                    <v-text-field
+                    <v-textarea
                       v-if="editHypothesis"
                       v-model="hypothesises[i].name"
+                      auto-grow
                     />
                     <template v-else>
                       {{ item.name }}
@@ -357,13 +365,14 @@
             <v-col
               cols="4"
             >
-              <v-text-field
+              <v-textarea
                 v-model="pa"
                 :disabled="!getRight()"
                 placeholder="Plan d'action"
                 background-color="rgba(253, 254, 251, 0.2)"
                 filled
                 rounded
+                auto-grow
                 @keydown.enter="addPa(pa)"
               />
             </v-col>
@@ -406,9 +415,10 @@
                   exact
                 >
                   <v-list-item-title>
-                    <v-text-field
+                    <v-textarea
                       v-if="editPa"
                       v-model="paArray[i].name"
+                      auto-grow
                     />
                     <template v-else>
                       <v-chip
@@ -555,19 +565,6 @@
             mdi-file-word
           </v-icon>
           DOC
-        </v-btn>
-        <v-btn
-          color="primary"
-          class="my-2"
-          large
-          rounded
-          :disabled="!valid"
-          @click="createPDF"
-        >
-          <v-icon>
-            mdi-file-pdf
-          </v-icon>
-          PDF
         </v-btn>
       </v-col>
     </v-row>
@@ -726,143 +723,6 @@ export default {
         this.pa = ''
       } else {
         this.$toast.warning('Le champ pa est vide')
-      }
-    },
-
-    /** Depecreated
-       * Permet de générer le PDF
-       * TODO - Gérer le multipages
-       *      - Compter le nombre de ligne sauté par la justification
-       *      - Rendre le code MOINS MOCHE
-       *      - GURVAN C DLA MERDE
-       *      - Update ne marche plus a cause de la génération du DOCX
-       */
-    createPDF () {
-      const start = 10
-      const gap = 15
-      const line = 7.5
-      const lowMarg = 15
-      const largeMarg = 25
-      let nextRow = 0
-
-      if (this.keywords.length !== 0) {
-        if (this.hypothesises.length !== 0) {
-          if (this.constraints.length !== 0) {
-            if (this.paArray.length !== 0) {
-              if (process.client) {
-                const JsPDF = require('jspdf')
-                const doc = new JsPDF('p', 'mm')
-                doc.setFont('helvetica')
-
-                // eslint-disable-next-line no-console
-                console.dir(doc.getFontSize())
-                // Le titre
-                doc.text(this.name, 100, start, { align: 'center' })
-
-                // On update la hauteur de la prochaine ligne pour pas réécrire sur le titre
-                nextRow = start + gap
-                // Les mots clés
-                doc.setFontSize(15)
-                doc.text('Mots clés : ', lowMarg, nextRow)
-
-                doc.setFontSize(13)
-                this.keywords.forEach(function (keyword, i) {
-                  nextRow += (i + line)
-                  doc.text(keyword.name, largeMarg, nextRow)
-                })
-                // On saute une ligne
-                nextRow += gap
-                // Les mots clés
-                doc.setFontSize(15)
-                doc.text('Contexte : ', lowMarg, nextRow)
-
-                // On va à la ligne
-                nextRow += line
-                // Les mots clés
-                doc.setFontSize(13)
-                doc.text(this.context, largeMarg, nextRow, {
-                  maxWidth: 170,
-                  align: 'justify'
-                })
-
-                // On saute deux lignes
-                nextRow += gap
-                // Les mots clés
-                doc.setFontSize(15)
-                doc.text('Contraintes : ', lowMarg, nextRow)
-                doc.setFontSize(13)
-                this.constraints.forEach(function (word, i) {
-                  nextRow += (i + line)
-                  doc.text(word.name, largeMarg, nextRow)
-                })
-
-                // On saute deux lignes
-                nextRow += gap
-                // Les mots clés
-                doc.setFontSize(15)
-                doc.text('Généralisation : ', lowMarg, nextRow)
-                // On va à la ligne
-                nextRow += line
-                // Les mots clés
-                doc.setFontSize(13)
-                doc.text(this.generalisation, largeMarg, nextRow, {
-                  maxWidth: 180,
-                  align: 'justify'
-                })
-
-                // On saute deux lignes
-                nextRow += gap
-                // Les mots clés
-                doc.setFontSize(15)
-                doc.text('Problématique : ', lowMarg, nextRow)
-                // On va à la ligne
-                nextRow += line
-                // Les mots clés
-                doc.setFontSize(13)
-                doc.text(this.problematic, largeMarg, nextRow, {
-                  maxWidth: 180,
-                  align: 'justify'
-                })
-
-                // On saute deux lignes
-                nextRow += gap
-                // Les mots clés
-                doc.setFontSize(15)
-                doc.text('Hypothèses : ', lowMarg, nextRow)
-                doc.setFontSize(13)
-                this.hypothesises.forEach(function (word, i) {
-                  nextRow += (i + line)
-                  doc.text('- ' + word.name, largeMarg, nextRow)
-                })
-
-                // On saute deux lignes
-                nextRow += gap
-                // Les mots clés
-                doc.setFontSize(15)
-                doc.text('Plan d\'action : ', lowMarg, nextRow)
-                doc.setFontSize(13)
-                this.paArray.forEach(function (word, i) {
-                  nextRow += (i + line)
-                  doc.text((i + 1) + ' - ' + word.name, largeMarg, nextRow)
-                })
-
-                doc.save(name)
-                this.clearAll()
-              } else {
-                // eslint-disable-next-line no-console
-                console.error('Une erreure est survenue pendant la création du PDF')
-              }
-            } else {
-              this.$toast.error('Il n\' y a aucune étape dans le plan d\'action')
-            }
-          } else {
-            this.$toast.error('Il n\' y a aucune contrainte')
-          }
-        } else {
-          this.$toast.error('Il n\' y a aucune Hypothèse')
-        }
-      } else {
-        this.$toast.error('Il n\' y a aucun mots clés')
       }
     },
 

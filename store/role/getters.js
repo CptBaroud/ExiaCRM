@@ -16,22 +16,22 @@ export default {
         out.push({
           role: 'Animateur',
           user: item.Animateur,
-          avatar: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png'
+          icon: 'mdi-account-tie'
         })
         out.push({
           role: 'Secretaire',
           user: item.Secretaire,
-          avatar: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png'
+          icon: 'mdi-account-search'
         })
         out.push({
           role: 'Scribe',
           user: item.Scribe,
-          avatar: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png'
+          icon: 'mdi-account-edit'
         })
         out.push({
           role: 'Gestionaire',
           user: item.Gestionaire,
-          avatar: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png'
+          icon: 'mdi-account-clock'
         })
       }
     })
