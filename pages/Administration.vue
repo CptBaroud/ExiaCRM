@@ -44,7 +44,9 @@
                   :key="i"
                 >
                   <v-list-item-avatar>
-                    <v-img v-if="item.avatar.length > 1" :src="item.avatar" />
+                    <v-icon large>
+                      {{ item.icon }}
+                    </v-icon>
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title>
@@ -167,6 +169,44 @@
           </template>
         </v-data-iterator>
       </v-col>
+      <v-col
+        cols="8"
+      >
+        <v-card style="border-radius: 20px">
+          <v-card-title>
+            Users
+          </v-card-title>
+          <v-card-text>
+            <v-data-table
+              :items="users"
+              :headers="headers"
+            >
+              <template v-slot:item.id="{ item }">
+                <v-chip>
+                  {{ item.id }}
+                </v-chip>
+              </template>
+              <template v-slot:item.avatar="{ item }">
+                <v-avatar>
+                  <v-img :src="item.avatar" />
+                </v-avatar>
+              </template>
+              <template v-slot:item.isAdmin="{ item }">
+                <v-icon
+                  v-if="item.isAdmin === 1"
+                >
+                  mdi-minus
+                </v-icon>
+                <v-icon
+                  v-else
+                >
+                  mdi-plus
+                </v-icon>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-col>
     </v-row>
     <v-layout
       v-else
@@ -202,98 +242,32 @@ export default {
       itemsPerPageArray: [4, 8, 11],
       itemsPerPage: 4,
       page: 1,
-      list1: [
-        {
-          username: 'Peliagos',
-          name: 'Remi',
-          avatar: ''
-        },
-        {
-          username: 'Archimed',
-          name: 'Julien',
-          avatar: ''
-        },
-        {
-          username: 'Franso',
-          name: 'François',
-          avatar: ''
-        },
-        {
-          username: 'Loulou',
-          name: 'Louis',
-          avatar: ''
-        },
-        {
-          username: 'Gwn',
-          name: 'Gwenael',
-          avatar: ''
-        },
-        {
-          username: 'CptBaroud',
-          name: 'Gurvan',
-          avatar: ''
-        },
-        {
-          username: 'Tipi',
-          name: 'Pauline',
-          avatar: ''
-        },
-        {
-          username: 'Socla',
-          name: 'Armand',
-          avatar: ''
-        }
-      ],
-      list2: [
-        {
-          username: 'Mmouky',
-          name: 'Kevin',
-          avatar: ''
-        },
-        {
-          username: 'Kevkev',
-          name: 'Kevin',
-          avatar: ''
-        },
-        {
-          username: 'Ulchero',
-          name: 'Benjamin',
-          avatar: ''
-        }
-      ],
-      list3: [
-        {
-          username: 'Loulou',
-          name: 'Louis',
-          avatar: ''
-        },
-        {
-          username: 'Gwn',
-          name: 'Gwenael',
-          avatar: ''
-        },
-        {
-          username: 'CptBaroud',
-          name: 'Gurvan',
-          avatar: ''
-        },
-        {
-          username: 'Tipi',
-          name: 'Pauline',
-          avatar: ''
-        }
-      ],
-      controlOnStart: true
+      controlOnStart: true,
+      headers: [
+        { text: 'Avatar', value: 'avatar' },
+        { text: 'Id', value: 'id', align: 'start' },
+        { text: 'Username', value: 'username' },
+        { text: 'Name', value: 'name' },
+        { text: 'Admin', value: 'isAdmin' },
+        { text: 'Actions', value: 'action' }
+      ]
     }
   },
   mounted () {
     this.getNumProsit()
+    this.getUser()
   },
   computed: {
     ...mapGetters({
       roles: 'role/role',
       equipe: 'role/equipe'
     }),
+
+    users: {
+      get () {
+        return this.$store.state.user.users
+      }
+    },
 
     numberOfPages () {
       return Math.ceil(this.roles.length / this.itemsPerPage)
@@ -318,8 +292,13 @@ export default {
   methods: {
     ...mapActions({
       editProsit: 'role/updateNumProsit',
-      getNumProsit: 'role/getNumProsit'
+      getNumProsit: 'role/getNumProsit',
+      getUsers: 'user/getUsers'
     }),
+
+    getUser () {
+      this.getUsers()
+    },
 
     editNumProsit () {
       this.editProsit(this.num).then(this.$toast.success('Le numéros de prosit a été update avec succès'))

@@ -29,14 +29,13 @@
             rounded
           >
             <v-list-item
-              v-for="(item, i) in equipe"
-              :key="i"
+              v-for="(item, idx) in equipe"
+              :key="idx"
             >
               <v-list-item-avatar>
-                <v-img v-if="item.avatar.length > 1" :src="item.avatar" />
-                <v-avatar v-else color="pantoneGreen">
-                  <span class="white--text headline">{{ item.name.substr(0, 1) }}</span>
-                </v-avatar>
+                <v-icon large>
+                  {{ item.icon }}
+                </v-icon>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title>
@@ -196,7 +195,7 @@ export default {
       prosit: 'role/numProsit',
       picked: 'kivaferkoi/picked',
       cer: 'prosit/cer',
-      promo: 'promo/promo'
+      promo: 'user/user'
     })
   },
   mounted () {

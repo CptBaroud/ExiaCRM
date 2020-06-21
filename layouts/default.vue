@@ -28,29 +28,34 @@
       </h1>
       <v-spacer />
       <v-list v-if="$auth.loggedIn" color="#C72E38" dense>
-        <v-hover
-          v-slot:default="{ hover }"
-          open-delay="200"
-        >
-          <v-list-item router to="/profil">
-            <v-list-item-avatar>
-              <v-img :src="$auth.user[0].avatar" />
-            </v-list-item-avatar>
-            <v-list-item-title>
-              <h3>{{ $auth.user[0].username }}</h3>
-            </v-list-item-title>
-            <v-btn
-              v-if="hover"
-              class="ml-2"
-              text
-              dark
-              small
+        <v-menu open-on-hover bottom offset-y>
+          <template v-slot:activator="{ on, attrs }">
+            <v-list-item
+              v-bind="attrs"
+              v-on="on"
+            >
+              <v-list-item-avatar>
+                <v-img :src="$auth.user[0].avatar" />
+              </v-list-item-avatar>
+              <v-list-item-title>
+                <h3>{{ $auth.user[0].username }}</h3>
+              </v-list-item-title>
+            </v-list-item>
+          </template>
+          <v-list color="#C72E38">
+            <v-list-item
               @click="logout"
             >
-              Deconnexion
-            </v-btn>
-          </v-list-item>
-        </v-hover>
+              <v-list-item-title>Deconnexion</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              router
+              to="/profil"
+            >
+              <v-list-item-title>Mon compte</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-list>
 
       <v-dialog v-else v-model="dialog" persistent max-width="310">
@@ -64,7 +69,7 @@
             <v-btn
               icon
               top
-              flat
+              text
               small
               right
               absolute
@@ -107,7 +112,7 @@
                   <v-btn
                     icon
                     top
-                    flat
+                    text
                     small
                     right
                     absolute
