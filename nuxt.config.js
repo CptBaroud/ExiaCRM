@@ -38,7 +38,9 @@ export default {
   */
   plugins: [
     'plugins/draggable.js',
-    'plugins/vuebar.js'
+    'plugins/vuebar.js',
+    'plugins/firestore.js',
+    'plugins/rtdb.js'
   ],
   /*
   ** Nuxt.js dev-modules

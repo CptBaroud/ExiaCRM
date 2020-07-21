@@ -44,15 +44,15 @@
           </template>
           <v-list color="#C72E38">
             <v-list-item
-              @click="logout"
-            >
-              <v-list-item-title>Deconnexion</v-list-item-title>
-            </v-list-item>
-            <v-list-item
               router
               to="/profil"
             >
               <v-list-item-title>Mon compte</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              @click="logout"
+            >
+              <v-list-item-title>Deconnexion</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>

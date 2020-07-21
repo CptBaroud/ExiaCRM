@@ -10,7 +10,7 @@
       md8
     >
       <v-card style="border-radius: 20px" class="transition">
-        <v-card-title>
+        <v-card-title class="mb-4">
           <v-avatar size="96">
             <v-img :src="user.avatar" min-height="64" min-width="64" />
           </v-avatar>
@@ -114,6 +114,7 @@
                 </v-select>
                 <v-btn
                   text
+                  @click="updateProfilPicture()"
                 >
                   Valider
                 </v-btn>
@@ -122,9 +123,19 @@
           </v-row>
         </v-card-text>
         <v-card-text v-else>
-          Y'a rien à voir pour l'instant circulez <br>
           <span class="caption">
-            Mais tu peux quand meme editer ton profil
+            Tu peux editer ton profil
+          </span>
+
+          <br>
+          <br>
+          <span class="h3 font-italic font-weight-light">
+            "{{ this.quote.quote }}"
+          </span>
+
+          <br>
+          <span class="caption">
+            - {{ this.quote.author }}
           </span>
         </v-card-text>
         <v-card-actions>
@@ -133,7 +144,7 @@
           >
             <v-col cols="10">
               <h3 class="subtitle-2 font-light">
-                Lache une petite note
+                Lâche une petite note
               </h3>
               <v-rating
                 v-model="rating"
@@ -155,12 +166,17 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Profil',
   data () {
     return {
       edit: false,
+      avatar: '',
       rating: 5,
+      mdp: '',
+      newMdp: '',
       user: this.$auth.user[0],
       avatars: [
         {
@@ -229,7 +245,51 @@ export default {
         }
       ],
       name: this.$auth.user[0].name,
-      username: this.$auth.user[0].username
+      username: this.$auth.user[0].username,
+      required: [
+        value => !!value || 'Required.'
+      ],
+      quote: {}
+    }
+  },
+  mounted () {
+    this.getQuote()
+  },
+  methods: {
+    updateProfilPicture () {
+      return new Promise((resolve) => {
+        axios.put(process.env.API_URL + '/users/avatar/' + this.$auth.user[0].id,
+          { avatar: this.avatar },
+          {
+            headers: {
+              token: this.$auth.getToken('local')
+            }
+          }).then((response) => {
+          if (response.status === 200) {
+            this.$toast.success('L\'avatar a été update avec succès')
+            window.location.reload(true)
+          } else {
+            this.$toast.error('Error' + response.status + ' ' + response.data.message)
+          }
+        }).catch((onerror) => {
+          this.$toast.error(onerror)
+        })
+      })
+    },
+
+    getQuote () {
+      return new Promise((resolve) => {
+        axios.get('https://quotes.rest/qod').then((response) => {
+          if (response.status === 200) {
+            console.dir(response.data)
+            const data = response.data.contents.quotes[0]
+            this.quote = {
+              quote: data.quote,
+              author: data.author
+            }
+          }
+        })
+      })
     }
   }
 }

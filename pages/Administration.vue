@@ -62,7 +62,7 @@
           </v-card-text>
         </v-card>
       </v-col>
-      <v-col
+      <!-- <v-col
         cols="8"
       >
         <v-data-iterator
@@ -168,7 +168,7 @@
             </v-row>
           </template>
         </v-data-iterator>
-      </v-col>
+      </v-col> -->
       <v-col
         cols="8"
       >
@@ -195,7 +195,7 @@
                 <v-icon
                   v-if="item.isAdmin === 1"
                 >
-                  mdi-minus
+                  mdi-crown-outline
                 </v-icon>
                 <v-icon
                   v-else
@@ -248,6 +248,8 @@ export default {
         { text: 'Id', value: 'id', align: 'start' },
         { text: 'Username', value: 'username' },
         { text: 'Name', value: 'name' },
+        { text: 'Promo', value: 'promo' },
+        { text: 'Code Centre', value: 'centre' },
         { text: 'Admin', value: 'isAdmin' },
         { text: 'Actions', value: 'action' }
       ]

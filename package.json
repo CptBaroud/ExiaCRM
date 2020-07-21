@@ -19,6 +19,7 @@
     "browserify-fs": "^1.0.0",
     "docx": "^5.0.2",
     "file-saver": "^2.0.2",
+    "firebase": "^7.16.0",
     "fs": "0.0.1-security",
     "fs-extra": "^9.0.0",
     "jspdf": "^1.5.3",
@@ -28,7 +29,8 @@
     "simplebar-vue": "^1.5.0",
     "vue-toastification": "^1.6.0",
     "vuebar": "0.0.20",
-    "vuedraggable": "^2.23.2"
+    "vuedraggable": "^2.23.2",
+    "vuefire": "^2.2.3"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.0.0",
