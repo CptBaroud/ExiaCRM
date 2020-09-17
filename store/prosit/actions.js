@@ -1,24 +1,6 @@
 import axios from 'axios'
 
 export default {
-  fillKeywords: (context, pa) => {
-    context.commit('fillKeywords', pa)
-  },
-  fillContext: (context, pa) => {
-    context.commit('fillContext', pa)
-  },
-  fillConstraints: (context, pa) => {
-    context.commit('fillConstraints', pa)
-  },
-  filGeneralisation: (context, pa) => {
-    context.commit('filGeneralisation', pa)
-  },
-  fillProblematics: (context, pa) => {
-    context.commit('fillProblematics', pa)
-  },
-  fillhypothesises: (context, pa) => {
-    context.commit('fillhypothesises', pa)
-  },
   fillPa: (context, pa) => {
     context.commit('fillPa', pa)
   },
@@ -65,6 +47,20 @@ export default {
     })
   },
 
+  getLastPa: (context) => {
+    return new Promise((resolve, reject) => {
+      axios.get(process.env.API_URL + '/prosit/get/last')
+        .then((response) => {
+          context.commit('fillLastPa', response.data)
+          resolve(response.data)
+        }).catch((onerror) => {
+        // eslint-disable-next-line no-console
+          console.error(onerror)
+          reject(onerror)
+        })
+    })
+  },
+
   getKeyword: (context) => {
     return new Promise((resolve, reject) => {
       axios.get(process.env.API_URL + '/prosit/get/allKeywords')
@@ -82,6 +78,18 @@ export default {
       axios.put(process.env.API_URL + '/prosit/update/keyword', { keyword: data })
         .then((response) => {
           context.commit('editKeyword', response.data)
+          resolve(response.data)
+        }).catch((onerror) => {
+          reject(onerror)
+        })
+    })
+  },
+
+  getSummary: (context, data) => {
+    return new Promise((resolve, reject) => {
+      axios.get(process.env.API_URL + '/prosit/pa/' + data)
+        .then((response) => {
+          context.commit('fillSummary', response.data)
           resolve(response.data)
         }).catch((onerror) => {
           reject(onerror)

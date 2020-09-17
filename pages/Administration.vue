@@ -236,6 +236,7 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Administration',
+  middleware: 'isAdmin',
   data () {
     return {
       num: this.numProsit,
@@ -259,6 +260,7 @@ export default {
     this.getNumProsit()
     this.getUser()
   },
+  // eslint-disable-next-line vue/order-in-components
   computed: {
     ...mapGetters({
       roles: 'role/role',

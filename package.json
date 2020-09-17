@@ -13,31 +13,32 @@
   },
   "dependencies": {
     "@nuxtjs/auth": "^4.9.1",
-    "@nuxtjs/axios": "^5.3.6",
+    "@nuxtjs/axios": "^5.12.1",
     "@nuxtjs/dotenv": "^1.4.0",
-    "@nuxtjs/pwa": "^3.0.0-0",
+    "@nuxtjs/pwa": "^3.0.1",
     "browserify-fs": "^1.0.0",
-    "docx": "^5.0.2",
+    "docx": "^5.3.0",
     "file-saver": "^2.0.2",
-    "firebase": "^7.16.0",
+    "firebase": "^7.19.0",
     "fs": "0.0.1-security",
-    "fs-extra": "^9.0.0",
+    "fs-extra": "^9.0.1",
     "jspdf": "^1.5.3",
     "jspdf-customfonts": "0.0.4-rc.4",
     "multer": "^1.4.2",
-    "nuxt": "^2.0.0",
-    "simplebar-vue": "^1.5.0",
-    "vue-toastification": "^1.6.0",
+    "nuxt": "^2.14.3",
+    "nuxt-socket-io": "^1.1.9",
+    "simplebar-vue": "^1.5.1",
+    "vue-toastification": "^1.7.6",
     "vuebar": "0.0.20",
-    "vuedraggable": "^2.23.2",
-    "vuefire": "^2.2.3"
+    "vuedraggable": "^2.24.1",
+    "vuefire": "^2.2.4"
   },
   "devDependencies": {
-    "@nuxtjs/vuetify": "^1.0.0",
     "@nuxtjs/eslint-config": "^2.0.0",
     "@nuxtjs/eslint-module": "^1.0.0",
+    "@nuxtjs/vuetify": "^1.0.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^6.1.0",
-    "eslint-plugin-nuxt": ">=0.4.2"
+    "eslint-plugin-nuxt": "^1.0.0"
   }
 }

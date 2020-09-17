@@ -19,17 +19,17 @@
           </h1>
         </v-card-title>
         <v-card-text>
+          <v-spacer />
           <v-btn
             color="primary"
             class="my-2"
             large
             link
+            to="/"
             rounded
+            nuxt
           >
             Accueil
-            <NuxtLink to="/">
-              Accueil
-            </NuxtLink>
           </v-btn>
         </v-card-text>
       </v-card>

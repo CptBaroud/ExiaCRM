@@ -10,109 +10,145 @@
         sm8
         md8
       >
-        <v-card style="border-radius: 20px" max-width="750">
-          <v-card-title>
-            <h1 class="display-1 pb-8">
-              Mots clés du prosit
-            </h1>
+        <v-card style="border-radius: 30px" max-width="775">
+          <v-card-title class="mx-4 ">
+            <v-sheet
+              color="#cf3436"
+              elevation="2"
+              class="mx-4 my-4"
+              rounded
+            >
+              <v-icon large class="mx-2 my-2">
+                mdi-book-open-variant
+              </v-icon>
+            </v-sheet>
+            Mots clés
             <v-spacer />
             <v-text-field
               v-model="search"
+              class="pt-8"
               label="Search"
               height="25"
               filled
               rounded
+              clearable
             />
           </v-card-title>
-          <v-card-subtitle>
+          <v-card-subtitle class="mx-4">
             Vous retrouvez ici les mots clés de tout les prosits
+            <v-row
+              align="center"
+              justify="start"
+            >
+              <v-col
+                v-for="(prosit, i) in allPa"
+                :key="i"
+                class="shrink"
+              >
+                <v-chip
+                  color="smokyBlack"
+                  @click="search = prosit.num_prosit.toString()"
+                >
+                  {{ prosit.num_prosit }}. {{ prosit.name }}
+                </v-chip>
+              </v-col>
+            </v-row>
           </v-card-subtitle>
           <v-card-text>
-            <v-data-table
-              :headers="headers"
-              :items="keywords"
-              :search="search"
-              :loading="done"
+            <v-card
+              flat
+              style="overflow-y: auto"
+              :class="scrollbarTheme"
+              :style="'height:' + windowSize.y / 1.75 + 'px'"
+              class="px-6"
             >
-              <template v-slot:item.action="{ item }">
-                <v-btn
-                  icon
-                  @click="getWikipage(item)"
-                >
-                  <v-icon v-if="item.definiton.length === 0">
-                    mdi-comment-edit-outline
-                  </v-icon>
-                  <v-icon v-else>
-                    mdi-pencil
-                  </v-icon>
-                </v-btn>
-              </template>
-              <template v-slot:item.definiton="{ item }">
-                <p class="truncate">
-                  {{ item.definiton }}
-                </p>
-              </template>
-              <template v-slot:top>
-                <v-dialog v-model="dialog" max-width="750px" scrollable>
-                  <v-flex class="overflow-y-auto" :class="scrollbarTheme">
-                    <v-card>
-                      <v-btn
-                        icon
-                        top
-                        text
-                        small
-                        right
-                        absolute
-                        @click="dialog = false"
-                      >
-                        <v-icon
-                          color="red"
+              <v-data-table
+                class="mx-4 my-4"
+                :headers="headers"
+                :items="keywords"
+                :search="search"
+                :loading="done"
+              >
+                <template v-slot:item.action="{ item }">
+                  <v-btn
+                    icon
+                    @click="getWikipage(item)"
+                  >
+                    <v-icon v-if="item.definiton.length === 0">
+                      mdi-comment-edit-outline
+                    </v-icon>
+                    <v-icon v-else>
+                      mdi-pencil
+                    </v-icon>
+                  </v-btn>
+                </template>
+                <template v-slot:item.definiton="{ item }">
+                  <p class="truncate">
+                    {{ item.definiton }}
+                  </p>
+                </template>
+                <template v-slot:top>
+                  <v-dialog v-model="dialog" max-width="750px" scrollable>
+                    <v-flex class="overflow-y-auto" :class="scrollbarTheme">
+                      <v-card>
+                        <v-btn
+                          icon
+                          top
+                          text
+                          small
+                          right
+                          absolute
+                          @click="dialog = false"
                         >
-                          mdi-close
-                        </v-icon>
-                      </v-btn>
-
-                      <v-card-title>
-                        <span class="headline">Définitions</span>
-                      </v-card-title>
-
-                      <v-card-text>
-                        <v-row
-                          class="overflow-y-auto"
-                          :class="scrollbarTheme"
-                          align="center"
-                          justify="start"
-                        >
-                          <v-col
-                            v-for="(keyword, i) in wikiWords"
-                            :key="i"
-                            cols="12"
-                            class="shrink"
+                          <v-icon
+                            color="red"
                           >
-                            <v-chip
-                              color="smokyBlack"
-                              class="mb-2"
-                              @click="editKeyword(keyword)"
+                            mdi-close
+                          </v-icon>
+                        </v-btn>
+
+                        <v-card-title>
+                          <span class="headline">Définitions</span>
+                        </v-card-title>
+
+                        <v-card-text>
+                          <v-row
+                            class="overflow-y-auto"
+                            :class="scrollbarTheme"
+                            align="center"
+                            justify="start"
+                          >
+                            <v-col
+                              v-for="(keyword, i) in wikiWords"
+                              :key="i"
+                              cols="12"
+                              class="shrink"
                             >
-                              {{ keyword.name }}
-                            </v-chip>
-                            <v-textarea
-                              v-model="keyword.definition"
-                              auto-grow
-                              filled
-                              background-color="rgba(253, 254, 251, 0.2)"
-                              rounded
-                              counter
-                              hint="En vrais essaye de faire quelque chose de court quand meme"
-                            />
-                          </v-col>
-                        </v-row>
-                      </v-card-text>
-                    </v-card>
-                  </v-flex>
-                </v-dialog>
-              </template>
-            </v-data-table>
+                              <v-chip
+                                color="smokyBlack"
+                                class="mb-2"
+                                @click="editKeyword(keyword)"
+                              >
+                                {{ keyword.name }}
+                              </v-chip>
+                              <v-textarea
+                                v-model="keyword.definition"
+                                auto-grow
+                                filled
+                                background-color="rgba(253, 254, 251, 0.2)"
+                                rounded
+                                counter
+                                hint="En vrais essaye de faire quelque chose de court quand meme"
+                              />
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                      </v-card>
+                    </v-flex>
+                  </v-dialog>
+                </template>
+              </v-data-table>
+            </v-card>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -123,7 +159,7 @@
 <script>
 
 import axios from 'axios'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Keywords',
@@ -138,15 +174,19 @@ export default {
         { text: 'Définition', value: 'definiton', width: 250 },
         { text: 'Actions', value: 'action' }
       ],
-      wikiWords: []
+      wikiWords: [],
+      windowSize: {
+        x: 0,
+        y: 1
+      }
     }
   },
   computed: {
-    keywords: {
-      get () {
-        return this.$store.state.prosit.keywords
-      }
-    },
+    ...mapGetters({
+      allPa: 'prosit/allPa',
+      keywords: 'prosit/keywords',
+      lastPa: 'prosit/lastPa'
+    }),
 
     scrollbarTheme () {
       return this.$vuetify.theme.dark ? 'dark' : 'light'
@@ -154,12 +194,29 @@ export default {
   },
   mounted () {
     this.getKeywords()
+    this.getAllPa()
+    this.getLastPa()
+    if (Object.keys(this.$route.query).length >= 1) {
+      this.search = this.$route.query.search
+    } else {
+      this.search = this.lastPa.num_prosit?.toString()
+    }
+    this.onResize()
   },
   methods: {
     ...mapActions({
       editKwrd: 'prosit/editKeyword',
-      getKwrd: 'prosit/getKeyword'
+      getKwrd: 'prosit/getKeyword',
+      getAllPa: 'prosit/getAllPa',
+      getLastPa: 'prosit/getLastPa'
     }),
+
+    /**
+     * Permet de calculer la taille de l'ecran
+     **/
+    onResize () {
+      this.windowSize = { x: window.innerWidth, y: window.innerHeight }
+    },
 
     getKeywords () {
       this.getKwrd()

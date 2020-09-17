@@ -1,5 +1,6 @@
 export default {
   fillKeywords (state, data) {
+    console.dir(data)
     state.keywords = data
   },
   fillContext (state, data) {
@@ -20,7 +21,14 @@ export default {
   fillPa (state, data) {
     state.pa = data
   },
+  fillSummary (state, data) {
+    state.summary = data
+  },
+  fillLastPa (state, data) {
+    state.lastPa = data[0]
+  },
   fillAllPa (state, data) {
+    console.dir(data)
     state.allPa = data
   },
   addCer (state, data) {

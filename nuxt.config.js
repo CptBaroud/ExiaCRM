@@ -61,8 +61,18 @@ export default {
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
     // Plugin pour les notifs
-    'vue-toastification/nuxt'
+    'vue-toastification/nuxt',
+    'nuxt-socket-io'
   ],
+
+  io: {
+    // module options
+    sockets: [{
+      name: 'main',
+      url: 'http://localhost:3000',
+      default: true
+    }]
+  },
 
   /*
   ** Axios module configuration
@@ -92,12 +102,12 @@ export default {
       login: '/',
       logout: '/login',
       user: '/profile',
-      callback: '/'
+      callback: '/login'
     }
   },
 
   router: {
-    /* middleware: ['authenticated'] */
+    //middleware: ['isAdmin']
   },
 
   /*

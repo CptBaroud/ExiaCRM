@@ -1,9 +1,12 @@
 export default function ({ store, redirect }) {
-  // Si l'utilisateur n'est pas authentifié
-  if (!store.state.auth.loggedIn) {
+  const isAuthenticated = !!store.state.auth.user
+
+  if (isAuthenticated) {
     if (store.state.auth.user[0].isAdmin) {
       return redirect('/administration')
+    } else {
+      return redirect('/chat')
     }
-    return redirect('/')
   }
+  return redirect('/')
 }

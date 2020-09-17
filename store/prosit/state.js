@@ -5,7 +5,9 @@ export default () => ({
   generalisation: '',
   problematics: [],
   hypothesises: [],
+  summary: [],
   pa: [],
   cer: [],
-  allPa: []
+  allPa: [],
+  lastPa: {}
 })

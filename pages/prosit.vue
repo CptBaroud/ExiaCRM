@@ -1,14 +1,15 @@
 <template>
-  <v-container fluid align="center">
-    <v-label>
-      <h1 class="display-1 mb-4">
-        Prosit Maker
-      </h1>
-    </v-label>
+  <v-container
+    fluid
+    align="center"
+  >
     <v-row
       align="start"
       justify="start"
     >
+      <v-col
+        cols="1"
+      />
       <v-col
         cols="2"
         xl="2"
@@ -16,35 +17,49 @@
         md="3"
         sm="7"
         xs="9"
-        class="mx-6"
       >
         <v-card
           raised
-          style="border-radius: 15px;"
+          style="border-radius: 30px;"
         >
-          <v-list
-            two-line
-            rounded
-          >
-            <v-list-item
-              v-for="(item, idx) in equipe"
-              :key="idx"
+          <v-card-title>
+            <v-sheet
+              color="#cf3436"
+              elevation="2"
+              class="mx-4 my-4"
+              rounded
             >
-              <v-list-item-avatar>
-                <v-icon large>
-                  {{ item.icon }}
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ item.role }}
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  {{ item.user }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+              <v-icon large class="mx-2 my-2">
+                mdi-account-group
+              </v-icon>
+            </v-sheet>
+            Equipe
+          </v-card-title>
+          <v-card-text>
+            <v-list
+              two-line
+              rounded
+            >
+              <v-list-item
+                v-for="(item, idx) in equipe"
+                :key="idx"
+              >
+                <v-list-item-avatar>
+                  <v-icon large>
+                    {{ item.icon }}
+                  </v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ item.role }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ item.user }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
         </v-card>
       </v-col>
       <v-col
@@ -55,517 +70,450 @@
         sm="9"
         xs="9"
       >
-        <v-form
-          ref="form"
-          v-model="valid"
-          lazy-validation
+        <v-card
+          style="border-radius: 30px"
+          raised
         >
-          <v-text-field
-            v-model="name"
-            :rules="required"
-            :disabled="!getRight()"
-            placeholder="Nom du Prosit"
-            filled
-            background-color="rgba(253, 254, 251, 0.2)"
-            rounded
-          />
-
-          <v-row
-            align="center"
-            justify="start"
-          >
-            <v-col
-              v-for="(keyword, i) in keywords"
-              :key="i"
-              class="shrink"
-            >
-              <v-chip
-                v-if="getRight()"
-                color="smokyBlack"
-                close
-                @click:close="keywords.splice(i, 1)"
-              >
-                {{ keyword.name }}
-              </v-chip>
-              <v-chip
-                v-else
-                color="smokyBlack"
-              >
-                {{ keyword.name }}
-              </v-chip>
-            </v-col>
-          </v-row>
-
-          <v-text-field
-            v-model="keywrd"
-            placeholder="Mots clés"
-            :disabled="!getRight()"
-            hint="Merci de ne pas faire d'abréviations / de coller les mots clées (ex : Pb d'optimisation / décisions) PS: je sais qui est scribe je te retrouverais si tu suis pas ces instructions"
-            filled
-            background-color="rgba(253, 254, 251, 0.2)"
-            rounded
-            @keydown.enter="addKeyword(keywrd)"
-          />
-
-          <v-textarea
-            v-model="context"
-            :disabled="!getRight()"
-            placeholder="Contexte"
-            :rules="required"
-            filled
-            background-color="rgba(253, 254, 251, 0.2)"
-            rounded
-          />
-
-          <v-row
-            align="start"
-            justify="start"
-          >
-            <v-col
-              cols="4"
-            >
-              <v-textarea
-                v-model="constraint"
-                :disabled="!getRight()"
-                placeholder="Contraintes"
-                filled
-                background-color="rgba(253, 254, 251, 0.2)"
-                rounded
-                auto-grow
-                @keydown.enter="addConstraint(constraint)"
-              />
-            </v-col>
-            <v-col
-              cols="8"
-            >
-              <v-list
-                v-if="constraints.length >= 1"
-                color="rgb(18,18,18)"
-                rounded
-              >
-                <v-list-item>
-                  <v-list-item-title>
-                    Editer
-                  </v-list-item-title>
-                  <v-list-item-action>
-                    <v-icon
-                      v-if="!editConstraints"
-                      @click="editConstraints = !editConstraints"
-                    >
-                      mdi-pencil
-                    </v-icon>
-                    <v-icon
-                      v-else
-                      color="pantoneGreen"
-                      @click="editConstraints = !editConstraints"
-                    >
-                      mdi-check
-                    </v-icon>
-                  </v-list-item-action>
-                </v-list-item>
-                <v-divider />
-                <v-list-item
-                  v-for="(item, i) in constraints"
-                  :key="i"
-                  exact
-                >
-                  <v-list-item-title>
-                    <v-textarea
-                      v-if="editConstraints"
-                      v-model="constraints[i].name"
-                      auto-grow
-                    />
-                    <template v-else>
-                      {{ item.name }}
-                    </template>
-                  </v-list-item-title>
-                  <v-list-item-action
-                    v-if="getRight()"
-                  >
-                    <v-icon
-                      color="primary"
-                      @click="constraints.splice(i, 1)"
-                    >
-                      mdi-close
-                    </v-icon>
-                  </v-list-item-action>
-                </v-list-item>
-              </v-list>
-            </v-col>
-          </v-row>
-
-          <v-text-field
-            v-model="generalisation"
-            :rules="required"
-            :disabled="!getRight()"
-            placeholder="Généralisation"
-            filled
-            background-color="rgba(253, 254, 251, 0.2)"
-            rounded
-          />
-
-          <v-row
-            align="start"
-            justify="start"
-          >
-            <v-col
-              cols="4"
-            >
-              <v-textarea
-                v-model="problematic"
-                :disabled="!getRight()"
-                placeholder="Problématique"
-                filled
-                rounded
-                auto-grow
-                background-color="rgba(253, 254, 251, 0.2)"
-                @keydown.enter="addProblematic(problematic)"
-              />
-            </v-col>
-            <v-col
-              cols="8"
-            >
-              <v-list
-                v-if="problematics.length >= 1"
-                color="rgb(18,18,18)"
-                rounded
-              >
-                <v-list-item>
-                  <v-list-item-title>
-                    Editer
-                  </v-list-item-title>
-                  <v-list-item-action>
-                    <v-icon
-                      v-if="!editProblematics"
-                      @click="editProblematics = !editProblematics"
-                    >
-                      mdi-pencil
-                    </v-icon>
-                    <v-icon
-                      v-else
-                      color="pantoneGreen"
-                      @click="editProblematics = !editProblematics"
-                    >
-                      mdi-check
-                    </v-icon>
-                  </v-list-item-action>
-                </v-list-item>
-                <v-divider />
-                <v-list-item
-                  v-for="(item, i) in problematics"
-                  :key="i"
-                  exact
-                >
-                  <v-list-item-title>
-                    <v-textarea
-                      v-if="editProblematics"
-                      v-model="problematics[i].name"
-                      auto-grow
-                    />
-                    <template v-else>
-                      {{ item.name }}
-                    </template>
-                  </v-list-item-title>
-                  <v-list-item-action
-                    v-if="getRight()"
-                  >
-                    <v-icon
-                      color="primary"
-                      @click="problematics.splice(i, 1)"
-                    >
-                      mdi-close
-                    </v-icon>
-                  </v-list-item-action>
-                </v-list-item>
-              </v-list>
-            </v-col>
-          </v-row>
-
-          <v-row
-            align="start"
-            justify="start"
-          >
-            <v-col
-              cols="4"
-            >
-              <v-textarea
-                v-model="hypothesis"
-                :disabled="!getRight()"
-                placeholder="Hypothèses"
-                filled
-                rounded
-                auto-grow
-                background-color="rgba(253, 254, 251, 0.2)"
-                @keydown.enter="addHypothesis(hypothesis)"
-              />
-            </v-col>
-            <v-col
-              cols="8"
-            >
-              <v-list
-                v-if="hypothesises.length >= 1"
-                color="rgb(18,18,18)"
-                rounded
-              >
-                <v-list-item>
-                  <v-list-item-title>
-                    Editer
-                  </v-list-item-title>
-                  <v-list-item-action>
-                    <v-icon
-                      v-if="!editHypothesis"
-                      @click="editHypothesis = !editHypothesis"
-                    >
-                      mdi-pencil
-                    </v-icon>
-                    <v-icon
-                      v-else
-                      color="pantoneGreen"
-                      @click="editHypothesis = !editHypothesis"
-                    >
-                      mdi-check
-                    </v-icon>
-                  </v-list-item-action>
-                </v-list-item>
-                <v-divider />
-                <v-list-item
-                  v-for="(item, i) in hypothesises"
-                  :key="i"
-                  exact
-                >
-                  <v-list-item-title>
-                    <v-textarea
-                      v-if="editHypothesis"
-                      v-model="hypothesises[i].name"
-                      auto-grow
-                    />
-                    <template v-else>
-                      {{ item.name }}
-                    </template>
-                  </v-list-item-title>
-                  <v-list-item-action
-                    v-if="getRight()"
-                  >
-                    <v-icon
-                      color="primary"
-                      @click="hypothesises.splice(i, 1)"
-                    >
-                      mdi-close
-                    </v-icon>
-                  </v-list-item-action>
-                </v-list-item>
-              </v-list>
-            </v-col>
-          </v-row>
-
-          <v-row
-            align="start"
-            justify="start"
-          >
-            <v-col
-              cols="4"
-            >
-              <v-textarea
-                v-model="pa"
-                :disabled="!getRight()"
-                placeholder="Plan d'action"
-                background-color="rgba(253, 254, 251, 0.2)"
-                filled
-                rounded
-                auto-grow
-                @keydown.enter="addPa(pa)"
-              />
-            </v-col>
-            <v-col
-              cols="8"
-            >
-              <v-list-item v-if="paArray.length >= 1">
-                <v-list-item-title>
-                  Editer
-                </v-list-item-title>
-                <v-list-item-action>
-                  <v-icon
-                    v-if="!editPa"
-                    @click="editPa = !editPa"
-                  >
-                    mdi-pencil
-                  </v-icon>
-                  <v-icon
-                    v-else
-                    color="pantoneGreen"
-                    @click="editPa = !editPa"
-                  >
-                    mdi-check
-                  </v-icon>
-                </v-list-item-action>
-              </v-list-item>
-              <v-divider v-if="paArray.length >= 1" />
-              <draggable
-                v-if="paArray.length >= 1"
-                :list="paArray"
-                :enable="getRight()"
-                class="list-group"
-                ghost-class="ghost"
-                @start="dragging = true"
-                @end="dragging = false"
-              >
-                <v-list-item
-                  v-for="(item, i) in paArray"
-                  :key="i"
-                  exact
-                >
-                  <v-list-item-title>
-                    <v-textarea
-                      v-if="editPa"
-                      v-model="paArray[i].name"
-                      auto-grow
-                    />
-                    <template v-else>
-                      <v-chip
-                        color="primary"
-                      >
-                        {{ i + 1 }}
-                      </v-chip>
-                      {{ item.name }}
-                    </template>
-                  </v-list-item-title>
-                  <v-list-item-action
-                    v-if="getRight()"
-                  >
-                    <v-icon
-                      color="primary"
-                      @click="paArray.splice(i, 1)"
-                    >
-                      mdi-close
-                    </v-icon>
-                  </v-list-item-action>
-                </v-list-item>
-              </draggable>
-            </v-col>
-          </v-row>
-        </v-form>
-        <!-- <v-card v-else raised style="border-radius: 15px">
           <v-card-title>
-            Prosit Aller
+            <v-sheet
+              color="#cf3436"
+              elevation="2"
+              class="mx-4 my-4"
+              rounded
+            >
+              <v-icon large class="mx-2 my-2">
+                mdi-view-list
+              </v-icon>
+            </v-sheet>
+            Prosit Maker
           </v-card-title>
-          <v-card-text>
-            <template class="my-4">
-              <h3>Mots clés </h3>
-              <v-row
-                align="center"
-                justify="start"
-              >
-                <v-col
-                  v-for="keyword in keywords"
-                  :key="keyword"
-                  class="shrink"
+          <v-card-text
+            class="px-6 py-6"
+          >
+            <v-card
+              flat
+              style="overflow-y: auto"
+              :class="scrollbarTheme"
+              :style="'height:' + windowSize.y / 1.65 + 'px'"
+              class="px-6"
+            >
+              <v-card-text>
+                <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
                 >
-                  <v-chip
-                    :key="keyword"
-                    color="primary"
+                  <v-text-field
+                    v-model="name"
+                    :rules="required"
+                    :disabled="!getRight()"
+                    placeholder="Nom du Prosit"
+                    filled
+                    background-color="rgba(253, 254, 251, 0.2)"
+                    rounded
+                  />
+
+                  <v-row
+                    align="center"
+                    justify="start"
                   >
-                    {{ keyword.name }}
-                  </v-chip>
-                </v-col>
-              </v-row>
-            </template>
-            <template>
-              <h3>Contexte </h3>
-              {{ context }}
-            </template>
-            <template>
-              <h3>Contraintes </h3>
-              <v-list
-                v-if="constraints.length >= 1"
-                rounded
-              >
-                <v-list-item
-                  v-for="item in constraints"
-                  :key="item"
-                  exact
+                    <v-col
+                      v-for="(keyword, i) in keywords"
+                      :key="i"
+                      class="shrink"
+                    >
+                      <v-chip
+                        v-if="getRight()"
+                        color="smokyBlack"
+                        close
+                        @click:close="keywords.splice(i, 1)"
+                      >
+                        {{ keyword.name }}
+                      </v-chip>
+                      <v-chip
+                        v-else
+                        color="smokyBlack"
+                      >
+                        {{ keyword.name }}
+                      </v-chip>
+                    </v-col>
+                  </v-row>
+
+                  <v-text-field
+                    v-model="keywrd"
+                    placeholder="Mots clés"
+                    :disabled="!getRight()"
+                    hint="Merci de ne pas faire d'abréviations / de coller les mots clées (ex : Pb d'optimisation / décisions) PS: je sais qui est scribe je te retrouverais si tu suis pas ces instructions"
+                    filled
+                    background-color="rgba(253, 254, 251, 0.2)"
+                    rounded
+                    @keydown.enter="addKeyword(keywrd)"
+                  />
+
+                  <v-textarea
+                    v-model="context"
+                    :disabled="!getRight()"
+                    placeholder="Contexte"
+                    :rules="required"
+                    filled
+                    background-color="rgba(253, 254, 251, 0.2)"
+                    rounded
+                  />
+
+                  <v-row
+                    align="start"
+                    justify="start"
+                  >
+                    <v-col
+                      cols="6"
+                    >
+                      <v-textarea
+                        v-model="constraint"
+                        :disabled="!getRight()"
+                        placeholder="Contraintes"
+                        filled
+                        background-color="rgba(253, 254, 251, 0.2)"
+                        rounded
+                        auto-grow
+                        @keydown.enter="addConstraint(constraint)"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="6"
+                    >
+                      <v-list
+                        :color="constraints.length < 1 ? '#1E1E1E' : '#292929'"
+                        style="border-radius: 30px"
+                        rounded
+                      >
+                        <v-list-item>
+                          <v-list-item-title />
+                          <v-list-item-action>
+                            <v-icon
+                              v-if="!editConstraints"
+                              @click="editConstraints = !editConstraints"
+                            >
+                              mdi-pencil
+                            </v-icon>
+                            <v-icon
+                              v-else
+                              color="pantoneGreen"
+                              @click="editConstraints = !editConstraints"
+                            >
+                              mdi-check
+                            </v-icon>
+                          </v-list-item-action>
+                        </v-list-item>
+                        <v-list-item
+                          v-for="(item, i) in constraints"
+                          :key="i"
+                          exact
+                        >
+                          <v-list-item-title>
+                            <v-textarea
+                              v-if="editConstraints"
+                              v-model="constraints[i].name"
+                              class="pt-4"
+                              auto-grow
+                              filled
+                              rounded
+                            />
+                            <template v-else>
+                              {{ item.name }}
+                            </template>
+                          </v-list-item-title>
+                          <v-list-item-action
+                            v-if="getRight()"
+                          >
+                            <v-icon
+                              color="primary"
+                              @click="constraints.splice(i, 1)"
+                            >
+                              mdi-close
+                            </v-icon>
+                          </v-list-item-action>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                  </v-row>
+
+                  <v-text-field
+                    v-model="generalisation"
+                    :rules="required"
+                    :disabled="!getRight()"
+                    placeholder="Généralisation"
+                    filled
+                    background-color="rgba(253, 254, 251, 0.2)"
+                    rounded
+                  />
+
+                  <v-row
+                    align="start"
+                    justify="start"
+                  >
+                    <v-col
+                      cols="6"
+                    >
+                      <v-textarea
+                        v-model="problematic"
+                        :disabled="!getRight()"
+                        placeholder="Problématique"
+                        filled
+                        rounded
+                        auto-grow
+                        background-color="rgba(253, 254, 251, 0.2)"
+                        @keydown.enter="addProblematic(problematic)"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="6"
+                    >
+                      <v-list
+                        :color="problematics.length < 1 ? '#1E1E1E' : '#292929'"
+                        style="border-radius: 30px"
+                        rounded
+                      >
+                        <v-list-item>
+                          <v-list-item-title />
+                          <v-list-item-action>
+                            <v-icon
+                              v-if="!editProblematics"
+                              @click="editProblematics = !editProblematics"
+                            >
+                              mdi-pencil
+                            </v-icon>
+                            <v-icon
+                              v-else
+                              color="pantoneGreen"
+                              @click="editProblematics = !editProblematics"
+                            >
+                              mdi-check
+                            </v-icon>
+                          </v-list-item-action>
+                        </v-list-item>
+                        <v-list-item
+                          v-for="(item, i) in problematics"
+                          :key="i"
+                          exact
+                        >
+                          <v-list-item-title>
+                            <v-textarea
+                              v-if="editProblematics"
+                              v-model="problematics[i].name"
+                              auto-grow
+                              filled
+                              rounded
+                            />
+                            <template v-else>
+                              {{ item.name }}
+                            </template>
+                          </v-list-item-title>
+                          <v-list-item-action
+                            v-if="getRight()"
+                          >
+                            <v-icon
+                              color="primary"
+                              @click="problematics.splice(i, 1)"
+                            >
+                              mdi-close
+                            </v-icon>
+                          </v-list-item-action>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                  </v-row>
+
+                  <v-row
+                    align="start"
+                    justify="start"
+                  >
+                    <v-col
+                      cols="6"
+                    >
+                      <v-textarea
+                        v-model="hypothesis"
+                        :disabled="!getRight()"
+                        placeholder="Hypothèses"
+                        filled
+                        rounded
+                        auto-grow
+                        background-color="rgba(253, 254, 251, 0.2)"
+                        @keydown.enter="addHypothesis(hypothesis)"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="6"
+                    >
+                      <v-list
+                        :color="hypothesises.length < 1 ? '#1E1E1E' : '#292929'"
+                        style="border-radius: 30px"
+                        rounded
+                      >
+                        <v-list-item>
+                          <v-list-item-title />
+                          <v-list-item-action>
+                            <v-icon
+                              v-if="!editHypothesis"
+                              @click="editHypothesis = !editHypothesis"
+                            >
+                              mdi-pencil
+                            </v-icon>
+                            <v-icon
+                              v-else
+                              color="pantoneGreen"
+                              @click="editHypothesis = !editHypothesis"
+                            >
+                              mdi-check
+                            </v-icon>
+                          </v-list-item-action>
+                        </v-list-item>
+                        <v-list-item
+                          v-for="(item, i) in hypothesises"
+                          :key="i"
+                          exact
+                        >
+                          <v-list-item-title>
+                            <v-textarea
+                              v-if="editHypothesis"
+                              v-model="hypothesises[i].name"
+                              auto-grow
+                              filled
+                              rounded
+                            />
+                            <template v-else>
+                              {{ item.name }}
+                            </template>
+                          </v-list-item-title>
+                          <v-list-item-action
+                            v-if="getRight()"
+                          >
+                            <v-icon
+                              color="primary"
+                              @click="hypothesises.splice(i, 1)"
+                            >
+                              mdi-close
+                            </v-icon>
+                          </v-list-item-action>
+                        </v-list-item>
+                      </v-list>
+                    </v-col>
+                  </v-row>
+
+                  <v-row
+                    align="start"
+                    justify="start"
+                  >
+                    <v-col
+                      cols="6"
+                    >
+                      <v-textarea
+                        v-model="pa"
+                        :disabled="!getRight()"
+                        placeholder="Plan d'action"
+                        filled
+                        rounded
+                        auto-grow
+                        background-color="rgba(253, 254, 251, 0.2)"
+                        @keydown.enter="addPa(pa)"
+                      />
+                    </v-col>
+                    <v-col
+                      cols="6"
+                    >
+                      <v-list
+                        :color="paArray.length < 1 ? '#1E1E1E' : '#292929'"
+                        style="border-radius: 30px"
+                        rounded
+                      >
+                        <v-list-item>
+                          <v-list-item-title />
+                          <v-list-item-action>
+                            <v-icon
+                              v-if="!editPa"
+                              @click="editPa = !editPa"
+                            >
+                              mdi-pencil
+                            </v-icon>
+                            <v-icon
+                              v-else
+                              color="pantoneGreen"
+                              @click="editPa = !editPa"
+                            >
+                              mdi-check
+                            </v-icon>
+                          </v-list-item-action>
+                        </v-list-item>
+                        <draggable
+                          v-if="paArray.length >= 1"
+                          :list="paArray"
+                          :enable="getRight()"
+                          class="list-group"
+                          ghost-class="ghost"
+                          :color="problematics.length < 1 ? '#1E1E1E' : '#292929'"
+                          style="border-radius: 30px"
+                          rounded
+                          @start="dragging = true"
+                          @end="dragging = false"
+                        >
+                          <v-list-item
+                            v-for="(item, i) in paArray"
+                            :key="i"
+                            exact
+                          >
+                            <v-list-item-title>
+                              <v-textarea
+                                v-if="editPa"
+                                v-model="paArray[i].name"
+                                auto-grow
+                                filled
+                                rounded
+                              />
+                              <template v-else>
+                                <v-chip
+                                  color="primary"
+                                >
+                                  {{ i + 1 }}
+                                </v-chip>
+                                {{ item.name }}
+                              </template>
+                            </v-list-item-title>
+                            <v-list-item-action
+                              v-if="getRight()"
+                            >
+                              <v-icon
+                                color="primary"
+                                @click="paArray.splice(i, 1)"
+                              >
+                                mdi-close
+                              </v-icon>
+                            </v-list-item-action>
+                          </v-list-item>
+                        </draggable>
+                      </v-list>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn
+                  v-if="getRight()"
+                  color="primary"
+                  class="my-2"
+                  large
+                  rounded
+                  :disabled="!valid"
+                  @click="createDocx"
                 >
-                  <v-list-item-title>
-                    {{ item.name }}
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </template>
-            <template>
-              <h3>Généralisation</h3>
-              {{ generalisation }}
-            </template>
-            <template>
-              <h3>Contraintes</h3>
-              <v-list
-                v-if="constraints.length >= 1"
-                rounded
-              >
-                <v-list-item
-                  v-for="item in constraints"
-                  :key="item"
-                  exact
-                >
-                  <v-list-item-title>
-                    {{ item.name }}
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </template>
-            <template>
-              <h3>Hypothèses</h3>
-              <v-list
-                v-if="hypothesises.length >= 1"
-                rounded
-              >
-                <v-list-item
-                  v-for="item in hypothesises"
-                  :key="item"
-                  exact
-                >
-                  <v-list-item-title>
-                    {{ item.name }}
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </template>
-            <template>
-              <h3>Plan d'action</h3>
-              <v-list
-                v-if="paArray.length >= 1"
-                rounded
-              >
-                <v-list-item
-                  v-for="item in paArray"
-                  :key="item"
-                  exact
-                >
-                  <v-list-item-title>
-                    {{ item.name }}
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </template>
+                  <v-icon>
+                    mdi-file-word
+                  </v-icon>
+                  DOC
+                </v-btn>
+              </v-card-actions>
+            </v-card>
           </v-card-text>
-        </v-card> -->
-      </v-col>
-      <v-col
-        v-if="getRight()"
-        cols="1"
-        align-self="end"
-      >
-        <v-btn
-          color="primary"
-          class="my-2"
-          large
-          rounded
-          :disabled="!valid"
-          @click="createDocx"
-        >
-          <v-icon>
-            mdi-file-word
-          </v-icon>
-          DOC
-        </v-btn>
+        </v-card>
       </v-col>
     </v-row>
   </v-container>
@@ -595,6 +543,10 @@ export default {
   data () {
     return {
       valid: true,
+      windowSize: {
+        x: 0,
+        y: 1
+      },
       user: this.$auth.user,
       editConstraints: false,
       editProblematics: false,
@@ -623,10 +575,15 @@ export default {
       roles: 'role/role',
       equipe: 'role/currentEquipe',
       numProsit: 'role/numProsit'
-    })
+    }),
+
+    scrollbarTheme () {
+      return this.$vuetify.theme.dark ? 'dark' : 'light'
+    }
   },
   mounted () {
     this.getNumProsit()
+    this.onResize()
   },
   methods: {
     ...mapActions({
@@ -635,6 +592,13 @@ export default {
       getNumProsit: 'role/getNumProsit',
       updateNumProsit: 'role/updateNumProsit'
     }),
+
+    /**
+     * Permet de calculer la taille de l'ecran
+     **/
+    onResize () {
+      this.windowSize = { x: window.innerWidth, y: window.innerHeight }
+    },
 
     /**
      * Permet de clear tout les eléments
@@ -657,6 +621,10 @@ export default {
       this.pa = ''
     },
 
+    clearConstraints () {
+      this.constraint = ''
+    },
+
     /**
        * Permet d'ajouter un mot clés
        * dans le tableau de mots clés
@@ -664,6 +632,9 @@ export default {
        */
     addKeyword (item) {
       if (item.length !== 0) {
+        if (item.toString().includes('/') || item.toString().includes(' ')) {
+          this.$toast.warning('Je crois avoir dis qlq chose sur les mots clés')
+        }
         this.keywords.push({ name: item, definition: '', num_prosit: this.numProsit })
         this.keywrd = ''
       } else {
@@ -1034,7 +1005,40 @@ export default {
 </script>
 
 <style scoped>
-  .rounded-card {
-    border-radius: 15px;
-  }
+.light::-webkit-scrollbar {
+  width: 15px;
+}
+
+.light::-webkit-scrollbar-track {
+  background: #e6e6e6;
+  border-left: 1px solid #dadada;
+}
+
+.light::-webkit-scrollbar-thumb {
+  background: #b0b0b0;
+  border: solid 3px #e6e6e6;
+  border-radius: 7px;
+}
+
+.light::-webkit-scrollbar-thumb:hover {
+  background: black;
+}
+
+.dark::-webkit-scrollbar {
+  width: 15px;
+}
+
+.dark::-webkit-scrollbar-track {
+  background: #202020;
+}
+
+.dark::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border: solid 3px #202020;
+  border-radius: 7px;
+}
+
+.dark::-webkit-scrollbar-thumb:hover {
+  background: white;
+}
 </style>

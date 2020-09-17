@@ -10,14 +10,27 @@
         sm8
         md6
       >
-        <v-card style="border-radius: 15px">
+        <v-card
+          style="border-radius: 20px"
+          elevation="2"
+          class="py-2"
+        >
           <v-card-title>
-            <h1 class="display-1 pb-8">
-              Prosits Allers
-            </h1>
+            <v-sheet
+              color="#cf3436"
+              elevation="2"
+              class="mx-4 my-4"
+              rounded
+            >
+              <v-icon large class="mx-2 my-2">
+                mdi-view-list
+              </v-icon>
+            </v-sheet>
+            Prosits Allers
             <v-spacer />
             <v-text-field
               v-model="search"
+              class="pt-8"
               label="Search"
               height="25"
               filled
@@ -83,7 +96,7 @@ export default {
         { text: 'PA n°', value: 'num_prosit', align: 'start' },
         { text: 'Nom du prosit', value: 'name' },
         { text: 'Scribe', value: 'scribe' },
-        { text: 'Actions', value: 'download' }
+        { text: '', value: 'download' }
       ]
     }
   },

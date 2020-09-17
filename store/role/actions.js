@@ -6,6 +6,7 @@ export default {
     const equipe = (value % 11) + 1
     context.commit('updateEquipe', equipe)
   },
+
   getNumProsit: (context) => {
     return new Promise((resolve, reject) => {
       axios.get(process.env.API_URL + '/prosit/get/numProsit')
@@ -20,6 +21,7 @@ export default {
         })
     })
   },
+
   updateNumProsit: (context, data) => {
     return new Promise((resolve, reject) => {
       axios.put(process.env.API_URL + '/prosit/update/numProsit', { num_prosit: data })

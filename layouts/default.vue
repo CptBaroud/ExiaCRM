@@ -4,30 +4,24 @@
   >
     <v-app-bar
       :clipped-left="clipped"
-      height="115"
+      class="px-4 py-4"
+      height="110"
       app
-      color="#C72E38"
+      color="#cf3436"
       flat
     >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-      <v-btn
-        v-if="drawer"
-        large
-        icon
-        @click="miniVariant = !miniVariant"
-      >
-        <v-icon v-if="!miniVariant">
-          mdi-chevron-left
-        </v-icon>
-        <v-icon v-else>
-          mdi-chevron-right
-        </v-icon>
-      </v-btn>
-      <h1 class="display-2">
-        {{ title }}
-      </h1>
       <v-spacer />
-      <v-list v-if="$auth.loggedIn" color="#C72E38" dense>
+      <v-badge
+        :value="notifications.length"
+        color="#green"
+        overlap
+        bordered
+      >
+        <v-icon>
+          mdi-bell
+        </v-icon>
+      </v-badge>
+      <v-list v-if="$auth.loggedIn" color="#cf3436" dense rounded class="mr-8">
         <v-menu open-on-hover bottom offset-y>
           <template v-slot:activator="{ on, attrs }">
             <v-list-item
@@ -42,7 +36,7 @@
               </v-list-item-title>
             </v-list-item>
           </template>
-          <v-list color="#C72E38">
+          <v-list color="#121212">
             <v-list-item
               router
               to="/profil"
@@ -211,20 +205,39 @@
     </v-app-bar>
     <v-navigation-drawer
       v-model="drawer"
+      color="#cf3436"
+      permanent
       floating
-      color="primary"
       app
       :clipped="clipped"
       :mini-variant="miniVariant"
     >
-      <v-list>
-        <v-list-item exact>
+      <v-list
+        rounded
+        nav
+      >
+        <v-spacer />
+        <v-btn
+          v-if="drawer"
+          large
+          icon
+          @click="miniVariant = !miniVariant"
+        >
+          <v-icon v-if="!miniVariant">
+            mdi-chevron-left
+          </v-icon>
+          <v-icon v-else>
+            mdi-chevron-right
+          </v-icon>
+        </v-btn>
+        <v-list-item exact class="mb-8">
           <v-list-item-content>
             <v-list-item-title>
-              <h1 class="display-1" />
+              <h1 class="display-1 mx" />
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-spacer />
         <v-list-item
           v-for="(item, i) in items"
           :key="i"
@@ -232,18 +245,22 @@
           router
           exact
         >
-          <v-list-item-action>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-action>
+          <v-list-item-icon>
+            <v-icon>
+              {{ item.icon }}
+            </v-icon>
+          </v-list-item-icon>
           <v-list-item-content>
-            <v-list-item-title v-text="item.title" />
+            <v-list-item-title>
+              {{ item.title }}
+            </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
     <v-content>
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" style="position: fixed">
-        <path fill="#C72E38" fill-opacity="1" d="M0,288L60,256C120,224,240,160,360,149.3C480,139,600,181,720,170.7C840,160,960,96,1080,90.7C1200,85,1320,139,1380,165.3L1440,192L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z" />
+        <path fill="#cf3436" fill-opacity="1" d="M0,192L48,160C96,128,192,64,288,69.3C384,75,480,149,576,154.7C672,160,768,96,864,106.7C960,117,1056,203,1152,202.7C1248,203,1344,117,1392,74.7L1440,32L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z" />
       </svg>
       <v-container class="scroll">
         <nuxt />
@@ -259,7 +276,7 @@ export default {
   data () {
     return {
       clipped: false,
-      miniVariant: false,
+      miniVariant: true,
       drawer: false,
       dialog: false,
       valid: true,
@@ -379,6 +396,7 @@ export default {
           to: '/administration'
         }
       ],
+      notifications: [],
       title: 'PrositBoost'
     }
   },
