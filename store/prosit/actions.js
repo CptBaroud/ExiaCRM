@@ -1,99 +1,44 @@
 import axios from 'axios'
 
 export default {
-  fillPa: (context, pa) => {
-    context.commit('fillPa', pa)
-  },
-
-  addCer: (context, pa) => {
+  fetch: (context, token) => {
     return new Promise((resolve, reject) => {
-      axios.post(process.env.API_URL + '/prosit/', pa)
+      axios.get(process.env.api_url + '/prosit', {
+        headers: {
+          authorization: token
+        }
+      })
         .then((response) => {
-          context.commit('addCer', pa)
-          resolve(response.data)
-        }).catch((onerror) => {
+          console.log(response.data)
+          context.commit('fillProsit', response.data)
+          resolve(response)
+        }).catch((e) => {
         // eslint-disable-next-line no-console
-          console.error(onerror)
-          reject(onerror)
+          console.error(e)
+          reject(e)
         })
     })
   },
 
-  getCer: (context, numProsit) => {
+  add: (context, data) => {
+    const token = data.token
+    delete data.token
+
     return new Promise((resolve, reject) => {
-      axios.get(process.env.API_URL + '/prosit/' + numProsit)
+      axios.post(process.env.api_url + '/prosit', data, {
+        headers: {
+          authorization: token
+        }
+      })
         .then((response) => {
-          context.commit('addCer', response.data)
-          resolve(response.data)
-        }).catch((onerror) => {
+          context.commit('addProsit', response.data)
+          resolve(response)
+        }).catch((e) => {
         // eslint-disable-next-line no-console
-          console.error(onerror)
-          reject(onerror)
-        })
-    })
-  },
-
-  getAllPa: (context) => {
-    return new Promise((resolve, reject) => {
-      axios.get(process.env.API_URL + '/prosit/get/all')
-        .then((response) => {
-          context.commit('fillAllPa', response.data)
-          resolve(response.data)
-        }).catch((onerror) => {
-        // eslint-disable-next-line no-console
-          console.error(onerror)
-          reject(onerror)
-        })
-    })
-  },
-
-  getLastPa: (context) => {
-    return new Promise((resolve, reject) => {
-      axios.get(process.env.API_URL + '/prosit/get/last')
-        .then((response) => {
-          context.commit('fillLastPa', response.data)
-          resolve(response.data)
-        }).catch((onerror) => {
-        // eslint-disable-next-line no-console
-          console.error(onerror)
-          reject(onerror)
-        })
-    })
-  },
-
-  getKeyword: (context) => {
-    return new Promise((resolve, reject) => {
-      axios.get(process.env.API_URL + '/prosit/get/allKeywords')
-        .then((response) => {
-          context.commit('fillKeywords', response.data)
-          resolve(response.data)
-        }).catch((onerror) => {
-          reject(onerror)
-        })
-    })
-  },
-
-  editKeyword: (context, data) => {
-    return new Promise((resolve, reject) => {
-      axios.put(process.env.API_URL + '/prosit/update/keyword', { keyword: data })
-        .then((response) => {
-          context.commit('editKeyword', response.data)
-          resolve(response.data)
-        }).catch((onerror) => {
-          reject(onerror)
-        })
-    })
-  },
-
-  getSummary: (context, data) => {
-    return new Promise((resolve, reject) => {
-      axios.get(process.env.API_URL + '/prosit/pa/' + data)
-        .then((response) => {
-          context.commit('fillSummary', response.data)
-          resolve(response.data)
-        }).catch((onerror) => {
-          reject(onerror)
+          console.error(e)
+          reject(e)
         })
     })
   }
+
 }

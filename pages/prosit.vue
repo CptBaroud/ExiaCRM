@@ -1,5 +1,6 @@
 <template>
-  <v-container
+  <h1>Test</h1>
+  <!--<v-container
     fluid
     align="center"
   >
@@ -516,10 +517,10 @@
         </v-card>
       </v-col>
     </v-row>
-  </v-container>
+  </v-container>-->
 </template>
 
-<script>
+<!--<script>
 import draggable from 'vuedraggable'
 import { saveAs } from 'file-saver'
 import { mapActions, mapGetters } from 'vuex'
@@ -1002,7 +1003,7 @@ export default {
     }
   }
 }
-</script>
+</script> -->
 
 <style scoped>
 .light::-webkit-scrollbar {

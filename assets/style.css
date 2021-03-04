@@ -1,0 +1,27 @@
+.selected {
+  color: #E44634 !important;
+}
+
+.theme--dark.v-list-item--active:hover::before, .theme--dark.v-list-item--active::before {
+  opacity: 0 !important;
+}
+
+.theme--light.v-list-item--active:hover::before, .theme--light.v-list-item--active::before {
+  opacity: 0 !important;
+}
+
+.v-application--is-ltr .v-list-item__action:first-child, .v-application--is-ltr .v-list-item__icon:first-child {
+  margin-right: 15px !important;
+}
+
+.card_login_background_light {
+  background-image: url('svg/login_light.svg');
+  background-size: 40em;
+  background-position: right 56% bottom 49%;
+}
+
+.card_login_background_dark {
+  background-image: url('svg/login_dark.svg');
+  background-size: 40em;
+  background-position: right 56% bottom 49%;
+}

@@ -1,293 +1,311 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs13
-      sm8
-      md8
+  <v-container class="mt-2" :class="$vuetify.theme.dark ? 'card-background-dark' : 'card-background-light'">
+    <v-row>
+      <v-col cols="12" class="d-flex align-center justify-center mt-4">
+        <v-card
+          color="secondary"
+          class="rounded-card"
+          flat
+          widt="600"
+        >
+          <v-card-text>
+            <v-list style="background: transparent">
+              <div class="mb-8">
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon>
+                      mdi-account-settings
+                    </v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      Parmètres du compte
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      Modifier votre nom, prénom ..
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+
+                <v-row>
+                  <v-col md="12" lg="6">
+                    <v-text-field
+                      v-model="name"
+                      filled
+                      rounded
+                      placeholder="Prénom"
+                    />
+                  </v-col>
+                  <v-col md="12" lg="6">
+                    <v-text-field
+                      v-model="surname"
+                      filled
+                      rounded
+                      placeholder="Nom"
+                    />
+                  </v-col>
+                </v-row>
+
+                <v-list-item class="mb-4">
+                  <v-list-item-avatar style="border: solid var(--v-primary-base) 2px" size="96">
+                    <v-img v-if="avatar" :src="avatar" />
+                    <v-icon v-else>
+                      mdi-account
+                    </v-icon>
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-form
+                      ref="uploadProfilePictureForm"
+                      v-model="uploadProfilPictureValid"
+                      lazy-validation
+                    >
+                      <v-file-input
+                        v-model="uploadProfilPictureItem"
+                        style="max-width: 356px"
+                        accept="image/png, image/jpeg, image/bmp"
+                        rounded
+                        hide-details
+                        filled
+                      />
+                    </v-form>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn
+                      class="ml-4"
+                      rounded
+                      color="primary"
+                      :disabled="!uploadProfilPictureValid"
+                      @click="uploadPicture"
+                    >
+                      Modifier
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+
+                <v-text-field
+                  v-model="phone"
+                  filled
+                  rounded
+                  placeholder="Numéro de telephone"
+                />
+              </div>
+              <div class="mb-8">
+                <v-list-item>
+                  <v-list-item-icon>
+                    <v-icon>
+                      mdi-lock
+                    </v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      Paramètres de sécurité
+                    </v-list-item-title>
+                    <v-list-item-subtitle>
+                      Modifier votre mot de passe, votre adresse de connexion ..
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                </v-list-item>
+
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="changePasswordItem.old"
+                      filled
+                      rounded
+                      type="password"
+                      placeholder="Mot de passe actuel"
+                      style="max-width: 356px"
+                    />
+                    <v-btn
+                      text
+                      rounded
+                      color="primary"
+                    >
+                      Mot de passe oublié ?
+                    </v-btn>
+                  </v-col>
+                  <v-col md="12" lg="6">
+                    <v-text-field
+                      v-model="changePasswordItem.new"
+                      filled
+                      rounded
+                      placeholder="Nouveau mot de passe"
+                    />
+                  </v-col>
+                  <v-col md="12" lg="6">
+                    <v-text-field
+                      v-model="changePasswordItem.verifyNew"
+                      filled
+                      rounded
+                      placeholder="Confirmer le nouveau mot de passe"
+                    />
+                  </v-col>
+                </v-row>
+                <v-text-field
+                  v-model="mail"
+                  filled
+                  rounded
+                  placeholder="Adresse Mail"
+                  append-icon="mdi-check"
+                />
+              </div>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+
+    <v-dialog
+      v-model="uploadProfilPictureDialog"
+      width="350"
     >
-      <v-card style="border-radius: 20px" class="transition">
+      <v-card
+        class="rounded-card"
+        color="secondary"
+      >
         <v-card-title class="mb-4">
-          <v-avatar size="96">
-            <v-img :src="user.avatar" min-height="64" min-width="64" />
-          </v-avatar>
-          <h1 v-if="!edit" class="headline">
-            {{ user.name }} <span class="font-italic font-weight-light">"{{ user.username }}"</span>
-          </h1>
+          Changer de photo de profil
+        </v-card-title>
+        <v-card-text>
           <v-form
-            v-else
+            ref="uploadProfilePictureForm"
+            v-model="uploadProfilPictureValid"
+            lazy-validation
           >
-            <v-text-field
-              v-model="name"
-              label="Nom"
-              filled
+            <v-file-input
+              v-model="uploadProfilPictureItem"
+              accept="image/png, image/jpeg, image/bmp"
               rounded
-              :value="user.name"
-            />
-            <v-text-field
-              v-model="username"
-              label="Username"
               filled
-              rounded
-              :value="user.username"
             />
           </v-form>
-          <v-spacer />
-          <v-btn
-            class="ml-4"
-            icon
-            @click="edit = !edit"
-          >
-            <v-icon>
-              mdi-pencil
-            </v-icon>
-          </v-btn>
-        </v-card-title>
-        <v-card-subtitle>
-          <v-divider />
-        </v-card-subtitle>
-        <v-card-text v-if="edit">
-          <v-row
-            justify="center"
-          >
-            <v-col cols="10">
-              <h3 class="my-2">
-                Changer de mot de passe
-              </h3>
-              <v-form class="mb-2">
-                <v-text-field
-                  v-model="mdp"
-                  label="Ancien mot de passe"
-                  filled
-                  rounded
-                  type="password"
-                />
-                <v-text-field
-                  v-model="newMdp"
-                  label="Nouveau mot de passe"
-                  filled
-                  rounded
-                  type="password"
-                />
-                <v-spacer />
-                <v-btn
-                  text
-                >
-                  Valider
-                </v-btn>
-              </v-form>
-              <v-spacer />
-              <h3 class="my-2">
-                Changer de photo de profil
-              </h3>
-              <v-form class="mb-2">
-                <v-select
-                  v-model="avatar"
-                  :items="avatars"
-                  :rules="required"
-                  item-text="name"
-                  item-value="img"
-                  filled
-                  rounded
-                  chips
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      :key="JSON.stringify(data.item.name)"
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      :disabled="data.disabled"
-                      @click:close="data.parent.selectItem(data.item)"
-                    >
-                      <v-avatar
-                        class="accent white--text"
-                        left
-                      >
-                        <v-img :src="data.item.img" />
-                      </v-avatar>
-                      {{ data.item.name }}
-                    </v-chip>
-                  </template>
-                </v-select>
-                <v-btn
-                  text
-                  @click="updateProfilPicture()"
-                >
-                  Valider
-                </v-btn>
-              </v-form>
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-text v-else>
-          <span class="caption">
-            Tu peux editer ton profil
-          </span>
-
-          <br>
-          <br>
-          <span class="h3 font-italic font-weight-light">
-            "{{ this.quote.quote }}"
-          </span>
-
-          <br>
-          <span class="caption">
-            - {{ this.quote.author }}
-          </span>
         </v-card-text>
         <v-card-actions>
-          <v-row
-            justify="center"
+          <v-spacer />
+          <v-btn
+            rounded
+            color="primary"
           >
-            <v-col cols="10">
-              <h3 class="subtitle-2 font-light">
-                Lâche une petite note
-              </h3>
-              <v-rating
-                v-model="rating"
-                full-icon="mdi-heart"
-                empty-icon="mdi-heart-outline"
-                readonly
-                background-color="primary"
-                color="primary"
-              />
-              <h6 class="overline">
-                PS : j'ai déjà mis la bonne note
-              </h6>
-            </v-col>
-          </v-row>
+            Changer
+          </v-btn>
+          <v-btn
+            text
+            rounded
+            @click="uploadProfilPictureDialog = false"
+          >
+            Annuler
+          </v-btn>
         </v-card-actions>
       </v-card>
-    </v-flex>
-  </v-layout>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script>
-import axios from 'axios'
-
 export default {
   name: 'Profil',
   data () {
     return {
-      edit: false,
-      avatar: '',
-      rating: 5,
-      mdp: '',
-      newMdp: '',
-      user: this.$auth.user[0],
-      avatars: [
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-siberian-husky.png?w=660',
-          name: 'Husky'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-alaskan-malamute.png?w=660',
-          name: 'Malamute'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-aspin.png?w=660',
-          name: 'Aspin'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-beagle.png?w=660',
-          name: 'Beagle'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-chow-again.png?w=660',
-          name: 'Chow'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-chow-chow.png?w=660',
-          name: 'Chow-Chow'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-dachshund.png?w=660',
-          name: 'Teckel'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-french-bulldog.png?w=660',
-          name: 'Bulldog Français'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-german-shepperd.png?w=660',
-          name: 'Berger Allemand'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-golden-retriever.png?w=660',
-          name: 'Golden Retriever'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-great-dane.png?w=660',
-          name: 'Dogue Allemand'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-labrador.png?w=660',
-          name: 'Labrador'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-labrador.png?w=660',
-          name: 'Labrador'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-pekingese.png?w=660',
-          name: 'Pékinois'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-pomeranian.png?w=660',
-          name: 'Spitz nain'
-        },
-        {
-          img: 'https://luckysketch.files.wordpress.com/2017/06/chibi-poodle.png?w=660',
-          name: 'Caniche'
-        }
-      ],
-      name: this.$auth.user[0].name,
-      username: this.$auth.user[0].username,
-      required: [
-        value => !!value || 'Required.'
-      ],
-      quote: {}
+      uploadProfilPictureDialog: false,
+      uploadProfilPictureItem: {},
+      uploadProfilPictureValid: false,
+
+      changePasswordItem: {
+        old: '',
+        new: '',
+        verifyNew: ''
+      },
+
+      windowSize: {
+        x: 0,
+        y: 1
+      }
+    }
+  },
+  computed: {
+    notification: {
+      get () {
+        return this.$store.getters['notification/notification']
+      }
+    },
+
+    name: {
+      get () {
+        return this.$auth.user.name
+      },
+      set (value) {
+        this.$store.dispatch('agent/updateData', { token: this.$auth.getToken('local'), _id: this.$auth.user._id, name: value })
+      }
+    },
+
+    surname: {
+      get () {
+        return this.$auth.user.surname
+      },
+      set (value) {
+        this.$store.dispatch('agent/updateData', { token: this.$auth.getToken('local'), _id: this.$auth.user._id, surname: value })
+      }
+    },
+
+    phone: {
+      get () {
+        return this.$auth.user.phone
+      },
+      set (value) {
+        this.$store.dispatch('agent/updateData', { token: this.$auth.getToken('local'), _id: this.$auth.user._id, phone: value })
+      }
+    },
+
+    mail: {
+      get () {
+        return this.$auth.user.mail
+      },
+      set (value) {
+        this.$store.dispatch('agent/updateData', { token: this.$auth.getToken('local'), _id: this.$auth.user._id, mail: value })
+      }
+    },
+
+    avatar: {
+      get () {
+        return this.$auth.user.avatar
+      },
+      set (value) {
+        this.$store.dispatch('agent/updateData', { token: this.$auth.getToken('local'), _id: this.$auth.user._id, avatar: value })
+      }
     }
   },
   mounted () {
-    this.getQuote()
+    this.onResize()
   },
   methods: {
-    updateProfilPicture () {
-      return new Promise((resolve) => {
-        axios.put(process.env.API_URL + '/users/avatar/' + this.$auth.user[0].id,
-          { avatar: this.avatar },
-          {
-            headers: {
-              token: this.$auth.getToken('local')
-            }
-          }).then((response) => {
-          if (response.status === 200) {
-            this.$toast.success('L\'avatar a été update avec succès')
-            window.location.reload(true)
-          } else {
-            this.$toast.error('Error' + response.status + ' ' + response.data.message)
-          }
-        }).catch((onerror) => {
-          this.$toast.error(onerror)
-        })
-      })
+    /**
+     * Permet de calculer la taille de l'ecran
+     **/
+    onResize () {
+      this.windowSize = {
+        x: window.innerWidth,
+        y: window.innerHeight
+      }
     },
 
-    getQuote () {
-      return new Promise((resolve) => {
-        axios.get('https://quotes.rest/qod').then((response) => {
-          if (response.status === 200) {
-            console.dir(response.data)
-            const data = response.data.contents.quotes[0]
-            this.quote = {
-              quote: data.quote,
-              author: data.author
-            }
-          }
+    uploadPicture () {
+      const agent = this.$auth.user
+      delete agent.password
+
+      const toBase64 = file => new Promise((resolve, reject) => {
+        const reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = () => resolve(reader.result)
+        reader.onerror = error => reject(error)
+      })
+
+      toBase64(this.uploadProfilPictureItem).then((response) => {
+        this.$store.dispatch('agent/updateProfilePicture', {
+          token: this.$auth.getToken('local'),
+          type: this.uploadProfilPictureItem.type,
+          name: this.uploadProfilPictureItem.name,
+          _id: this.$auth.user._id,
+          file: response
         })
       })
     }
@@ -296,7 +314,7 @@ export default {
 </script>
 
 <style scoped>
-  .transition {
-    transition: height .150s ease-in-out;
-  }
+>>> .v-text-field--enclosed .v-input__append-inner {
+  padding-top: 0 !important;
+}
 </style>
