@@ -77,7 +77,7 @@ export default {
     // module options
     sockets: [{
       name: 'main',
-      url: 'http://localhost:3000',
+      url: 'http://localhost:3000/',
       default: true
     }]
   },
@@ -133,6 +133,8 @@ export default {
           primary: '#E44634',
           accent: '#EA6D5D',
           text: '#F9F9FB',
+          text_light: '#1C1C1E',
+          text_dark: '#F9F9FB',
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
@@ -148,6 +150,8 @@ export default {
           primary: '#E44634',
           accent: '#EA6D5D',
           text: '#1C1C1E',
+          text_light: '#1C1C1E',
+          text_dark: '#F9F9FB',
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,

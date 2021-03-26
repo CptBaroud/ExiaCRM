@@ -31,6 +31,7 @@
                 solo
                 style="max-width: 414px"
                 :rules="[rules.required]"
+                @keydown="emitMessage({type: 'title', data: addProsit.title})"
               />
 
               <template>
@@ -247,22 +248,22 @@
               <v-row style="padding-top: 0">
                 <v-col cols="5">
                   <v-textarea
-                    v-model="addPa"
+                    v-model="addSummary"
                     label="Plan d'action"
                     background-color="secondary"
                     auto-grow
                     flat
                     solo
-                    @keypress.enter="pushElement(addProsit.pa, addPa, 'addPa')"
+                    @keypress.enter="pushElement(addProsit.summary, addSummary, 'addSummary')"
                   />
                 </v-col>
                 <v-col cols="7">
-                  <v-list v-if="addProsit.pa.length > 0" color="background">
+                  <v-list v-if="addProsit.summary.length > 0" color="background">
                     <v-list-item>
                       <v-list-item-content />
                       <v-list-item-action>
-                        <v-btn icon small @click="editPa = !editPa">
-                          <v-icon v-if="!editPa">
+                        <v-btn icon small @click="editSummary = !editSummary">
+                          <v-icon v-if="!editSummary">
                             mdi-pencil
                           </v-icon>
                           <v-icon v-else>
@@ -272,7 +273,7 @@
                       </v-list-item-action>
                     </v-list-item>
                     <draggable
-                      :list="addProsit.pa"
+                      :list="addProsit.summary"
                       class="list-group"
                       ghost-class="ghost"
                       style="border-radius: 30px"
@@ -281,14 +282,14 @@
                       @end="dragging = false"
                     >
                       <v-list-item
-                        v-for="(item, i) in addProsit.pa"
+                        v-for="(item, i) in addProsit.summary"
                         :key="i"
                         exact
                       >
                         <v-list-item-title>
                           <v-textarea
-                            v-if="editPa"
-                            v-model="addProsit.pa[i]"
+                            v-if="editSummary"
+                            v-model="addProsit.summary[i]"
                             auto-grow
                             filled
                             rounded
@@ -305,7 +306,7 @@
                         <v-list-item-action>
                           <v-icon
                             color="primary"
-                            @click="removeElement(addProsit.pa, i)"
+                            @click="removeElement(addProsit.summary, i)"
                           >
                             mdi-close
                           </v-icon>
@@ -322,6 +323,7 @@
               large
               color="primary"
               :disabled="!addPrositValid"
+              style="color: var(--v-text_inversed-base)"
               @click="createProsit"
             >
               Créer
@@ -336,11 +338,20 @@
 <script>
 export default {
   name: 'Add',
+  middleware ({ store, redirect }) {
+    if (store.$auth.user.role < 2 || store.state.team.currentTeam.scribe._id !== store.$auth.user._id) {
+      store.$toast.warning('L\'accès à cette page est reservée aux administrateurs et à l\'actuel scribe pour l\'instant')
+      redirect('/')
+    } else if (store.$auth.user.role < 2) {
+      store.$toast.warning('L\'accès à cette page est reservée aux administrateurs et à l\'actuel scribe pour l\'instant')
+      redirect('/')
+    }
+  },
   data () {
     return {
       // Element a push dans un tabelau dans addProsit
       addKeyword: '',
-      addPa: '',
+      addSummary: '',
       addConstraints: '',
       addProblematics: '',
       addHypothesies: '',
@@ -349,7 +360,7 @@ export default {
       editConstraints: false,
       editProblematics: false,
       editHypoethesies: false,
-      editPa: false,
+      editSummary: false,
 
       // Element d'ajout du prosit
       addPrositValid: false,
@@ -358,7 +369,7 @@ export default {
         contraints: [],
         problematics: [],
         hypotesies: [],
-        pa: []
+        summary: []
       },
 
       // Regles de validation
@@ -367,13 +378,36 @@ export default {
       }
     }
   },
+  mounted () {
+    // On ecoute le socket
+    this.socket = this.$nuxtSocket({
+      name: 'main'
+    })
+
+    this.socket.on('news', (msg) => {
+      console.log(msg)
+    })
+
+    this.socket.on('prosit', (msg) => {
+      console.log(msg)
+    })
+  },
   methods: {
+    emitMessage (data) {
+      console.log(data)
+      this.socket.emit('prosit', data, (resp) => {
+        console.log(resp)
+      })
+    },
+
     pushElement (array, element, ref) {
+      this.emitMessage({ type: 'push', array, element })
       array.push(element)
       this.$data[ref] = ''
     },
 
     removeElement (array, elementIndex) {
+      this.emitMessage({ type: 'remove', array, elementIndex })
       array.splice(elementIndex, 1)
     },
 

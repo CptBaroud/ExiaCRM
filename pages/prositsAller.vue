@@ -117,7 +117,7 @@ export default {
 
     getCer (numProsit) {
       return new Promise((resolve) => {
-        axios.get(process.env.API_URL + '/prosit/' + numProsit)
+        axios.get(process.env.api_url + '/prosit/' + numProsit)
           .then((response) => {
             resolve(response.data)
           }).catch(() => {

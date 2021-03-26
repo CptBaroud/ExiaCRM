@@ -144,7 +144,6 @@
       elevation="0"
     >
       <v-list
-        rounded
         nav
       >
         <img
@@ -225,14 +224,9 @@ export default {
           to: '/prosits/add'
         },
         {
-          icon: 'mdi-view-list',
-          title: 'Prosit Aller',
-          to: '/prositsAller'
-        },
-        {
-          icon: 'mdi-book-open-variant',
-          title: 'Mots clés',
-          to: '/keywords'
+          icon: 'mdi-file-document-multiple',
+          title: 'Prosits',
+          to: '/prosits'
         },
         {
           icon: 'mdi-account-group',
@@ -259,6 +253,16 @@ export default {
   },
   mounted () {
     this.$store.dispatch('prosit/fetch', this.$auth.getToken('local'))
+    this.$store.dispatch('kivaferkoi/fetch', this.$auth.getToken('local'))
+    this.$store.dispatch('user/fetch', this.$auth.getToken('local'))
+    this.$store.dispatch('team/fetch', this.$auth.getToken('local'))
+    this.$store.dispatch('conf/fetch', this.$auth.getToken('local')).then((resp) => {
+      if (resp) {
+        this.$store.dispatch('team/fetchCurrentTeam', { token: this.$auth.getToken('local'), num: resp.numProsit }).then((resp) => {
+          console.log(resp)
+        })
+      }
+    })
   }
 }
 </script>

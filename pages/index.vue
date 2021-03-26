@@ -11,18 +11,24 @@
               :class="$vuetify.theme.dark ? 'card-background-dark' : 'card-background-light'"
               rounded="lg"
             >
-              <v-card-title class="text-md-h5 text-sm-h4 mb-6" style="color: var(--v-text-base)">
+              <v-card-title class="text-md-h5 text-sm-h4 mb-8" style="color: var(--v-text-base)">
                 Bonjour, {{ $auth.user.name }}
               </v-card-title>
-              <v-card-text class="text-md-h6 font-weight-light mt-">
-                Tu n'as pas de role pour ce prosit <br> et tu n'as pas de partie à faire
+              <v-card-text v-if="currentTeam" class="text-md-h6 font-weight-light">
+                <span v-if="currentTeam.animateur._id === $auth.user._id">
+                  Tu es animateur sur ce prosit
+                </span>
+                <span v-else>
+                  Tu n'as pas de role pour ce prosit
+                </span>
+                <br> et tu n'as pas de partie à faire
               </v-card-text>
               <v-card-actions class="my-4">
                 <v-btn
                   color="primary"
                   class="mx-4 my-2"
                 >
-                  En voir plus
+                  Créer un prosit
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -36,33 +42,242 @@
               rounded="lg"
               elevation="0"
             >
-              <v-card-text>
+              <v-card-title style="padding-bottom: 0">
+                <v-spacer />
+                <v-btn
+                  nuxt
+                  icon
+                  small
+                  to="/prosits"
+                >
+                  <v-icon>
+                    mdi-dots-horizontal
+                  </v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-card-text v-if="currentTeam">
                 <v-list-item>
                   <v-list-item-content>
                     <v-list-item-title class="text-md-h5">
                       Equipe n°1
                     </v-list-item-title>
-                    <v-list-item-subtitle class="text-md-h6">
+                    <v-list-item-subtitle class="text-md-h6 text--secondary">
                       Prosit 1
                     </v-list-item-subtitle>
                   </v-list-item-content>
                   <v-list-item-action>
                     <v-row class="avatars">
-                      <v-avatar class="avatars__item">
-                        <v-img class="avatar" src="http://localhost:3000/images/user_homme.svg" />
-                      </v-avatar>
-                      <v-avatar class="avatars__item">
-                        <v-img class="avatar" src="http://localhost:3000/images/user_femme.svg" />
-                      </v-avatar>
-                      <v-avatar class="avatars__item">
-                        <v-img class="avatar" src="http://localhost:3000/images/user_femme.svg" />
-                      </v-avatar>
-                      <v-avatar class="avatars__item" color="primary">
-                        FB
-                      </v-avatar>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-avatar class="avatars__item" v-bind="attrs" v-on="on">
+                            <v-img class="avatar" :src="currentTeam.animateur.avatar ? currentTeam.animateur.avatar : avatar" />
+                          </v-avatar>
+                        </template>
+                        <span>Animateur : {{ currentTeam.animateur.name }}</span>
+                      </v-tooltip>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-avatar class="avatars__item" v-bind="attrs" v-on="on">
+                            <v-img class="avatar" :src="currentTeam.scribe.avatar ? currentTeam.scribe.avatar : avatar" />
+                          </v-avatar>
+                        </template>
+                        <span>Scribe : {{ currentTeam.scribe.name }}</span>
+                      </v-tooltip>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-avatar class="avatars__item" v-bind="attrs" v-on="on">
+                            <v-img class="avatar" :src="currentTeam.secretaire.avatar ? currentTeam.secretaire.avatar : avatar" />
+                          </v-avatar>
+                        </template>
+                        <span>Secretaire : {{ currentTeam.secretaire.name }}</span>
+                      </v-tooltip>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-avatar class="avatars__item" v-bind="attrs" v-on="on">
+                            <v-img class="avatar" :src="currentTeam.gestionaire.avatar ? currentTeam.gestionaire.avatar : avatar" />
+                          </v-avatar>
+                        </template>
+                        <span>Gestionaire : {{ currentTeam.gestionaire.name }}</span>
+                      </v-tooltip>
                     </v-row>
                   </v-list-item-action>
                 </v-list-item>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col
+            lg="5"
+            md="6"
+          >
+            <v-card
+              v-if="kivaferkoi.picked"
+              color="secondary mb-4"
+              rounded="lg"
+              elevation="0"
+            >
+              <v-card-title style="padding-bottom: 0">
+                <v-spacer />
+                <v-btn
+                  nuxt
+                  icon
+                  small
+                  to="/kivaferkoi"
+                >
+                  <v-icon>
+                    mdi-dots-horizontal
+                  </v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-card-text>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-md-h5">
+                      Tirés au sort
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="text-md-h6 font-weight-light text--secondary">
+                      {{ kivaferkoi.picked.length }} personnes
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-row class="avatars">
+                      <v-tooltip v-for="(item, i) in kivaferkoi.picked" :key="i" bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-avatar class="avatars__item" v-bind="attrs" v-on="on">
+                            <v-img class="avatar" :src="item.avatar ? item.avatar : avatar" />
+                          </v-avatar>
+                        </template>
+                        <span>{{ item.name }}</span>
+                      </v-tooltip>
+                    </v-row>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-card-text>
+            </v-card>
+            <v-card
+              v-if="kivaferkoi.notYetPicked"
+              color="secondary mb-4"
+              rounded="lg"
+              elevation="0"
+            >
+              <v-card-title style="padding-bottom: 0">
+                <v-spacer />
+                <v-btn
+                  nuxt
+                  icon
+                  small
+                  to="/kivaferkoi"
+                >
+                  <v-icon>
+                    mdi-dots-horizontal
+                  </v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-card-text>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-md-h5">
+                      Pas encore tirés
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="text-md-h6 font-weight-light text--secondary">
+                      {{ kivaferkoi.notYetPicked.length }} personnes
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-row class="avatars">
+                      <v-tooltip v-for="(item, i) in kivaferkoi.notYetPicked" :key="i" bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-avatar class="avatars__item" v-bind="attrs" v-on="on">
+                            <v-img class="avatar" :src="item.avatar ? item.avatar : avatar" />
+                          </v-avatar>
+                        </template>
+                        <span>{{ item.name }}</span>
+                      </v-tooltip>
+                    </v-row>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-card-text>
+            </v-card>
+            <v-card
+              v-if="kivaferkoi.alreadyPicked"
+              color="secondary"
+              rounded="lg"
+              elevation="0"
+            >
+              <v-card-title style="padding-bottom: 0">
+                <v-spacer />
+                <v-btn
+                  nuxt
+                  icon
+                  small
+                  to="/kivaferkoi"
+                >
+                  <v-icon>
+                    mdi-dots-horizontal
+                  </v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-card-text>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-md-h5">
+                      Déjà tirés
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="text-md-h6 font-weight-light text--secondary">
+                      {{ kivaferkoi.alreadyPicked.length }} personnes
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-row class="avatars">
+                      <v-tooltip v-for="(item, i) in kivaferkoi.alreadyPicked" :key="i" bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-avatar class="avatars__item" v-bind="attrs" v-on="on">
+                            <v-img class="avatar" :src="item.avatar ? item.avatar : avatar" />
+                          </v-avatar>
+                        </template>
+                        <span>{{ item.name }}</span>
+                      </v-tooltip>
+                    </v-row>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-card-text>
+            </v-card>
+          </v-col>
+          <v-col
+            lg="3"
+            md="6"
+          >
+            <v-card color="secondary" rounded="lg" flat>
+              <v-card-title>
+                <v-list-item>
+                  <v-list-item-content>
+                    <v-list-item-title class="text-md-h5">
+                      Les liens utiles
+                    </v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+              </v-card-title>
+              <v-card-text>
+                <v-list
+                  color="secondary"
+                >
+                  <v-list-item>
+                    <v-list-item-icon>
+                      <v-icon
+                        color="primary"
+                      >
+                        mdi-discord
+                      </v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        Discord
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        <a href="https://discord.gg/fqVWdAgp">Viens</a>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-list>
               </v-card-text>
             </v-card>
           </v-col>
@@ -102,8 +317,7 @@
                           :key="i"
                           color="accent"
                           label
-                          :class="i === 0 ? 'mr-2' : 'mx-2'"
-                          class="my-1"
+                          class="my-1 mr-3"
                         >
                           {{ item.name }}
                         </v-chip>
@@ -112,9 +326,9 @@
                         v-if="data.item.keywords.length >= 2 && data.item.keywords.length >= 3"
                         color="secondary"
                         label
-                        class="ml-2"
+                        style="color: var(--var-text-base)"
                       >
-                         + {{ data.item.keywords.length - 3 }} autres ...
+                        + {{ data.item.keywords.length - 3 }} autres ...
                       </v-chip>
                       <v-list-item>
                         <v-list-item-content>
@@ -175,9 +389,30 @@ export default {
       }
     },
 
+    kivaferkoi: {
+      get () {
+        return this.$store.getters['kivaferkoi/kivaferkoi']
+      }
+    },
+
+    currentTeam: {
+      get () {
+        return this.$store.getters['team/currentTeam']
+      }
+    },
+
+    conf: {
+      get () {
+        return this.$store.getters['conf/conf']
+      }
+    },
+
     avatar () {
       return process.env.api_url + '/images/user_homme.svg'
     }
+  },
+  mounted () {
+    this.$store.dispatch('team/fetchCurrentTeam', { token: this.$auth.getToken('local'), num: this.conf.numProsit })
   }
 }
 </script>
